@@ -38,8 +38,8 @@ El sistema está orientado a la gestión de turnos médicos, permitiendo a los a
 
 ## Integrantes
 
-- Bravo Gaston
+- Bravo Gastón
 - Vilchez Franco
 - Echevarria Matias
 - Diaz Cristopher
-- Donaire Adrian
+- Donaire Adrián
