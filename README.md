@@ -36,6 +36,31 @@ El sistema está orientado a la gestión de turnos médicos, permitiendo a los a
 4. Levantar la base de datos MySQL (puede usarse Docker).
 5. Ejecutar la aplicación con Flask.
 
+## Pasos para configurar tu entorno de trabajo con `uv`
+
+1. Abrir **PowerShell como administrador**.  
+2. Instalar `uv`:
+   ```powershell
+   powershell -c "irm https://astral.sh/uv/install.ps1 | iex"
+Reiniciar la PC.
+
+Abrir el proyecto en Visual Studio Code.
+
+Abrir la terminal en VS Code.
+
+Verificar que uv está instalado:
+
+uv
+
+Crear un entorno virtual con uv:
+
+uv venv
+
+Instalar dependencias necesarias:
+
+uv add flask==3.1.1
+uv add python-dotenv==1.1.1
+
 ## Integrantes
 
 - Bravo Gastón
