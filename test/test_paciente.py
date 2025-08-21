@@ -1,0 +1,30 @@
+from app.models import Paciente
+import unittest
+from flask import current_app
+from app import create_app
+import os
+
+class PacienteTestCase(unittest.TestCase):
+
+    def setUp(self):
+        os.environ['FLASK_CONTEXT'] = 'testing'
+        self.app = create_app()
+        self.app_context = self.app.app_context()
+        self.app_context.push()
+
+    def tearDown(self):
+        self.app_context.pop()
+
+    def test_app(self):
+        self.assertIsNotNone(current_app)
+
+    def test_paciente(self):
+        paciente = Paciente()
+        paciente.nombre = "Juan"
+        paciente.email = "test@um.um.edu.ar"
+        paciente.edad = 30
+        paciente.telefono = "1234567890"
+        self.assertIsNotNone(paciente)
+        
+if __name__ == '__main__':
+    unittest.main()
