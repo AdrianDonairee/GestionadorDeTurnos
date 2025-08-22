@@ -61,6 +61,12 @@ Instalar dependencias necesarias:
 uv add flask==3.1.1
 uv add python-dotenv==1.1.1
 
+para actualizar dependencias en el proyecto
+uv sync para sincronizar
+
+uv add "Flask-SQLAlchemy==3.1.1"
+uv add 'mysql-connector-python==9.4.0'
+
 ## Integrantes
 
 - Bravo Gastón
