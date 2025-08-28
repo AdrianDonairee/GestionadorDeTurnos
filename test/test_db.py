@@ -7,31 +7,29 @@ import os
 class DbTestCase(unittest.TestCase):
 
     def setUp(self):
-        os.environ['FLASK_CONTEXT'] = 'testing'
-        self.app = create_app()
+        # Indicar que se quiere usar la configuración de testing
+        self.app = create_app('testing')
         self.app_context = self.app.app_context()
-        
         self.app_context.push()
         
+        # Crear todas las tablas antes de cada test
+        db.create_all()
 
     def tearDown(self):
-        
-        
+        # Limpiar la base de datos después de cada test
+        db.session.remove()
+        db.drop_all()
         self.app_context.pop()
 
     def test_app(self):
+        # Verifica que la app existe
         self.assertIsNotNone(current_app)
 
     def test_db_connection(self):
-        from mysql.connector import (connection)
+        # Verifica que la base de datos funciona ejecutando un query simple
+        result = db.session.query(text("'hello world'")).one()
+        self.assertEqual(result[0], 'hello world')
 
-        cnx = connection.MySQLConnection(user='root', password='r00tgest10nad0r',
-                                 host='127.0.0.1',
-                                 database='test_turnos',
-                                 port=3307)
-        self.assertTrue(cnx.is_connected())                         
-        cnx.close()
-        
 
 if __name__ == '__main__':
     unittest.main()
