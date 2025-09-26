@@ -67,6 +67,9 @@ uv sync para sincronizar
 uv add "Flask-SQLAlchemy==3.1.1"
 uv add 'mysql-connector-python==9.4.0'
 
+## ejecutar proyecto en modo desarrollo
+uv run flask run
+
 ## Integrantes
 
 - Bravo Gastón

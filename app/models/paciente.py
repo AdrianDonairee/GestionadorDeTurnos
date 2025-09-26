@@ -1,7 +1,10 @@
 from dataclasses import dataclass
-@dataclass(init=False)
+@dataclass(init=True, repr=True, eq=True)
 class Paciente():
-    nombre:str 
+    nombre:str
+    apellido:str
+    dni:str 
     email:str 
-    edad:str
+    fechadenacimiento:str
     telefono:str 
+    

@@ -3,9 +3,10 @@ from flask import Flask
 import os
 from flask_sqlalchemy import SQLAlchemy
 from app.config import config
+from flask_marshmallow import Marshmallow
 
 db = SQLAlchemy()
-
+ma = Marshmallow()
 def create_app(config_name: str = None) -> Flask:
     """
     Using an Application Factory
@@ -23,7 +24,10 @@ def create_app(config_name: str = None) -> Flask:
 
     # Inicializar la base de datos
     db.init_app(app)
-
+    ma.init_app(app)
+    from app.resources import home_bp,paciente_bp
+    app.register_blueprint(home_bp, url_prefix='/api/v1')
+    app.register_blueprint(paciente_bp, url_prefix='/api/v1')
     @app.shell_context_processor
     def ctx():
         return {"app": app, "db": db}
