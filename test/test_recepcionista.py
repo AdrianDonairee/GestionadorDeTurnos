@@ -19,10 +19,11 @@ class RecepcionistaTestCase(unittest.TestCase):
         self.assertIsNotNone(current_app)
 
     def test_recepcionista(self):
-        recepcionista= Recepcionista()
-        recepcionista.nombre = "Juan"
-        recepcionista.email = "test@um.um.edu.ar"
+        # Instanciamos correctamente pasando los parámetros requeridos
+        recepcionista = Recepcionista(nombre="Juan", email="test@um.um.edu.ar")
         self.assertIsNotNone(recepcionista)
+        self.assertEqual(recepcionista.nombre, "Juan")
+        self.assertEqual(recepcionista.email, "test@um.um.edu.ar")
         
 if __name__ == '__main__':
     unittest.main()
