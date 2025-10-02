@@ -1,6 +1,9 @@
 from app.models import Recepcionista
 from app import db
-from app.repositories import Create, Read
+from app.repositories.create import Create
+from app.repositories.read import Read
+
+
 
 class RecepcionistaRepository(Create, Read):
 

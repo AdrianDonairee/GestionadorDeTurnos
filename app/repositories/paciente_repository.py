@@ -1,31 +1,18 @@
-from app.models import Paciente
-from app import db
-from typing import List
-from app.repositories import Create, Read, Update, Delete
+from app.models.paciente import Paciente
 
-class PacienteRepository(Create, Read, Update, Delete): 
+class PacienteRepository:
+    def __init__(self):
+        self._pacientes = {}
+        self._next_id = 1
 
-    @staticmethod
-    def create(paciente: Paciente) -> Paciente:
-        db.session.add(paciente)
-        db.session.commit()
-        return paciente
+    def save(self, paciente: Paciente):
+        paciente_id = self._next_id
+        self._pacientes[paciente_id] = paciente
+        self._next_id += 1
+        return paciente_id, paciente
 
-    @staticmethod
-    def get_by_id(id: int) -> Paciente:
-        return db.session.query(Paciente).filter_by(id=id).first()
-    
-    @staticmethod
-    def read_all() -> list[Paciente]:
-        return db.session.query(Paciente).all()
-    
-    @staticmethod
-    def update(paciente: Paciente) -> Paciente:
-        db.session.merge(paciente)
-        db.session.commit()
-        return paciente
-    
-    @staticmethod
-    def delete(paciente: Paciente) -> None:
-        db.session.delete(paciente)
-        db.session.commit()
+    def get_by_id(self, paciente_id: int):
+        return self._pacientes.get(paciente_id)
+
+    def get_all(self):
+        return self._pacientes.items()

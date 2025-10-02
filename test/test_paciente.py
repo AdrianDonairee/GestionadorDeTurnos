@@ -19,12 +19,21 @@ class PacienteTestCase(unittest.TestCase):
         self.assertIsNotNone(current_app)
 
     def test_paciente(self):
-        paciente = Paciente()
-        paciente.nombre = "Juan"
-        paciente.email = "test@um.um.edu.ar"
-        paciente.edad = 30
-        paciente.telefono = "1234567890"
-        self.assertIsNotNone(paciente)
+        paciente = Paciente(
+            nombre="Juan",
+            apellido="Pérez",
+            dni="12345678",
+            email="juan@mail.com",
+            fechadenacimiento="1990-01-01",
+            telefono="2615551234"
+        )
+
+        self.assertEqual(paciente.nombre, "Juan")
+        self.assertEqual(paciente.apellido, "Pérez")
+        self.assertEqual(paciente.dni, "12345678")
+        self.assertEqual(paciente.email, "juan@mail.com")
+        self.assertEqual(paciente.fechadenacimiento, "1990-01-01")
+        self.assertEqual(paciente.telefono, "2615551234")
         
 if __name__ == '__main__':
     unittest.main()
