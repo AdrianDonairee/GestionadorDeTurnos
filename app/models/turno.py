@@ -1,17 +1,15 @@
-from dataclasses import dataclass
+from app import db
 from datetime import date, time
 
-@dataclass
-class Turno:
-    fecha: date
-    hora: time
-    estado: str = "disponible"
-    paciente_id: int | None = None   # opcional, por si más adelante querés asociarlo
+class Turno(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    fecha = db.Column(db.Date, nullable=False)
+    hora = db.Column(db.Time, nullable=False)
+    estado = db.Column(db.String(20), default="disponible")
+    paciente_id = db.Column(db.Integer, nullable=True)
 
     def asignar_cliente(self):
-        """Marca el turno como reservado"""
         self.estado = "reservado"
 
     def liberar_turno(self):
-        """Libera el turno y lo deja disponible"""
         self.estado = "disponible"

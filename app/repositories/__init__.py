@@ -1,2 +1,2 @@
-from .paciente_repository import PacienteRepository
-from .recepcionista_repository import RecepcionistaRepository
+from .create import Create
+from .read import Read

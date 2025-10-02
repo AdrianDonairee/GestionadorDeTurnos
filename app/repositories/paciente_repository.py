@@ -1,4 +1,6 @@
 from app.models.paciente import Paciente
+from .create import Create
+from .read import Read
 
 class PacienteRepository:
     def __init__(self):
