@@ -1,31 +1,18 @@
-from app.models import Recepcionista
-from app import db
-from app.repositories.create import Create
-from app.repositories.read import Read
+from app.models.recepcionista import Recepcionista
 
+class RecepcionistaRepository:
+    def __init__(self):
+        self._recepcionistas = {}
+        self._next_id = 1
 
+    def save(self, recepcionista: Recepcionista):
+        recepcionista_id = self._next_id
+        self._recepcionistas[recepcionista_id] = recepcionista
+        self._next_id += 1
+        return recepcionista_id, recepcionista
 
-class RecepcionistaRepository(Create, Read):
+    def get_by_id(self, recepcionista_id: int):
+        return self._recepcionistas.get(recepcionista_id)
 
-    @staticmethod
-    def create(recepcionista: Recepcionista) -> Recepcionista:
-        if hasattr(recepcionista, "__table__"):
-            db.session.add(recepcionista)
-            db.session.commit()
-            return recepcionista
-
-        return recepcionista
-
-    @staticmethod
-    def get_by_id(id: int) -> Recepcionista:
-        if hasattr(Recepcionista, "__table__"):
-            return db.session.query(Recepcionista).filter_by(id=id).first()
-
-        return None
-
-    @staticmethod
-    def read_all() -> list[Recepcionista]:
-        if hasattr(Recepcionista, "__table__"):
-            return db.session.query(Recepcionista).all()
-
-        return []
+    def get_all(self):
+        return self._recepcionistas.items()
