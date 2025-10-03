@@ -1,17 +1,16 @@
-from dataclasses import dataclass, field
-from typing import List
+from app import db
 from app.models.turno import Turno
 
-@dataclass
-class Agenda:
-    recepcionista_id: int
-    turnos: List[Turno] = field(default_factory=list)
+class Agenda(db.Model):
+    __tablename__ = "agendas"
 
-    def agregar_turno(self, turno: Turno) -> None:
-        """Agrega un turno a la agenda"""
-        self.turnos.append(turno)
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    fecha = db.Column(db.Date, nullable=False)
+    turnos = db.relationship("Turno", backref="agenda", lazy=True)
 
-    def eliminar_turno(self, turno: Turno) -> None:
-        """Elimina un turno de la agenda si existe"""
-        if turno in self.turnos:
-            self.turnos.remove(turno)
+    def __init__(self, fecha):
+        self.fecha = fecha
+
+    def __repr__(self):
+        return f"<Agenda {self.fecha}>"
+
