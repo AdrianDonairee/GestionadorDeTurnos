@@ -1,61 +1,46 @@
 import unittest
-from flask import current_app
-from app import create_app
 from app.models.agenda import Agenda
 from app.models.turno import Turno
-from datetime import date, time
-import os
+from app.repositories.agenda_repository import AgendaRepository
 
-class AgendaTestCase(unittest.TestCase):
-
+class TestAgendaRepository(unittest.TestCase):
     def setUp(self):
-        os.environ['FLASK_CONTEXT'] = 'testing'
-        self.app = create_app()
-        self.app_context = self.app.app_context()
-        self.app_context.push()
+        self.repo = AgendaRepository()
 
-    def tearDown(self):
-        self.app_context.pop()
+    def test_add_and_get_agenda(self):
+        agenda_data = {"recepcionista_id": 1}
+        agenda = self.repo.add_agenda(agenda_data)
+        fetched = self.repo.get_agenda(agenda.recepcionista_id)
+        self.assertEqual(fetched.recepcionista_id, 1)
+        self.assertEqual(fetched.turnos, [])
 
-    def test_app(self):
-        """Verifica que la app se haya creado bien"""
-        self.assertIsNotNone(current_app)
+    def test_list_agendas(self):
+        self.repo.add_agenda({"recepcionista_id": 1})
+        self.repo.add_agenda({"recepcionista_id": 2})
+        agendas = self.repo.list_agendas()
+        self.assertEqual(len(agendas), 2)
+        self.assertEqual(agendas[0].recepcionista_id, 1)
+        self.assertEqual(agendas[1].recepcionista_id, 2)
 
-    def test_agenda_creacion(self):
-        """Prueba que la agenda se cree con lista de turnos vacía"""
-        agenda = Agenda(recepcionista_id=1)
-        self.assertEqual(agenda.recepcionista_id, 1)
+    def test_delete_agenda(self):
+        agenda = self.repo.add_agenda({"recepcionista_id": 3})
+        result = self.repo.delete_agenda(agenda.recepcionista_id)
+        self.assertTrue(result)
+        self.assertIsNone(self.repo.get_agenda(agenda.recepcionista_id))
+
+    def test_update_agenda(self):
+        agenda = self.repo.add_agenda({"recepcionista_id": 4})
+        updated = self.repo.update_agenda(agenda.recepcionista_id, {"recepcionista_id": 5})
+        self.assertEqual(updated.recepcionista_id, 5)
+
+    def test_agregar_y_eliminar_turno(self):
+        agenda = self.repo.add_agenda({"recepcionista_id": 6})
+        turno = Turno(id=1, paciente_id=1, fecha="2025-10-17")
+        agenda.agregar_turno(turno)
+        self.assertEqual(len(agenda.turnos), 1)
+        self.assertEqual(agenda.turnos[0].id, 1)
+        agenda.eliminar_turno(turno)
         self.assertEqual(len(agenda.turnos), 0)
 
-    def test_agregar_turno(self):
-        """Prueba agregar un turno a la agenda"""
-        agenda = Agenda(recepcionista_id=1)
-        turno = Turno(
-            fecha=date(2025, 8, 21),
-            hora=time(10, 30),
-            estado="disponible"
-        )
-
-        agenda.agregar_turno(turno)
-
-        self.assertEqual(len(agenda.turnos), 1)
-        self.assertEqual(agenda.turnos[0].estado, "disponible")
-
-    def test_eliminar_turno(self):
-        """Prueba eliminar un turno de la agenda"""
-        agenda = Agenda(recepcionista_id=1)
-        turno = Turno(
-            fecha=date(2025, 8, 21),
-            hora=time(11, 0),
-            estado="disponible"
-        )
-        agenda.agregar_turno(turno)
-
-        self.assertEqual(len(agenda.turnos), 1)  # antes de eliminar
-        agenda.eliminar_turno(turno)
-
-        self.assertEqual(len(agenda.turnos), 0)  # después de eliminar
-
-
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()
