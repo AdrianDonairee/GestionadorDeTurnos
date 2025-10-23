@@ -1,7 +1,7 @@
 import unittest
 from flask import current_app
 from app import create_app
-from app.models.turno import Turno
+from app.models import Turno
 from datetime import date, time
 import os
 
