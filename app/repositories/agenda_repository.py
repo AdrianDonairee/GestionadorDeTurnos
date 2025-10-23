@@ -1,23 +1,21 @@
+from app.repositories.bases_repository import Read
 from app import db
-from app.models.agenda import Agenda
+from app.models import Agenda
 
-class AgendaRepository:
+class AgendaRepository(Read, Create, Update):
+    def get_by_id(self, id: int) -> Agenda:
+        return db.session.query(Agenda).filter_by(id=id).first()
 
-    @staticmethod
-    def get_all():
-        return Agenda.query.all()
+    def get_all(self) -> list[Agenda]:
+        return db.session.query(Agenda).all()
 
-    @staticmethod
-    def get_by_id(agenda_id):
-        return Agenda.query.get(agenda_id)
-
-    @staticmethod
-    def save(agenda):
+    def save(self, agenda: Agenda) -> Agenda:
         db.session.add(agenda)
         db.session.commit()
         return agenda
 
-    @staticmethod
-    def delete(agenda):
-        db.session.delete(agenda)
+    def update(self, agenda: Agenda) -> Agenda:
+        db.session.merge(agenda)
         db.session.commit()
+        return agenda
+

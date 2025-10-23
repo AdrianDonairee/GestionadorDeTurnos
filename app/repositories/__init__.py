@@ -1,2 +1,1 @@
-from .create import Create
-from .read import Read
+from .bases_repository import Create, Read, Update, Delete

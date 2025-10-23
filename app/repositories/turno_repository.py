@@ -1,9 +1,8 @@
 from app.models import Turno
 from app import db
-from .create import Create
-from .read import Read
 
-class TurnoRepository(Create, Read):
+
+class TurnoRepository():
 
     @staticmethod
     def create(turno: Turno) -> Turno:

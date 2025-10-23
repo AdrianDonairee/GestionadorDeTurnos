@@ -2,8 +2,8 @@ from app.models.paciente import Paciente
 from app.repositories.paciente_repository import PacienteRepository
 
 class PacienteService:
-    def __init__(self, repository: PacienteRepository):
-        self.repository = repository
+    def __init__(self):
+        self.repository = PacienteRepository()
 
     def registrar_paciente(self, nombre, apellido, dni, email, fechadenacimiento, telefono):
         paciente = Paciente(
@@ -19,3 +19,6 @@ class PacienteService:
 
     def obtener_paciente(self, paciente_id: int):
         return self.repository.get_by_id(paciente_id)
+    
+    def obtener_todos_los_pacientes(self):
+        return self.repository.get_all()

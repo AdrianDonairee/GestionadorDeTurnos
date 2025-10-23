@@ -1,12 +1,11 @@
 import unittest
-from app.services.paciente_service import PacienteService
-from app.repositories.paciente_repository import PacienteRepository
+from app.services import PacienteService
+
 
 class TestPacienteService(unittest.TestCase):
     def setUp(self):
-        self.repository = PacienteRepository()
-        self.service = PacienteService(self.repository)
-
+        
+        self.service = PacienteService()
     def test_registrar_paciente(self):
         paciente_id, paciente = self.service.registrar_paciente(
             "Juan", "Pérez", "12345678", "juan@mail.com", "1990-01-01", "2615551234"
