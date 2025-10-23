@@ -2,6 +2,7 @@ import unittest
 from flask import current_app
 from app import create_app
 from app.models import Turno
+from app.services import TurnoService
 from datetime import date, time
 import os
 
@@ -27,6 +28,7 @@ class TurnoTestCase(unittest.TestCase):
             hora=time(10, 30),
             estado="disponible"
         )
+        TurnoService.create(turno)
         self.assertEqual(turno.fecha, date(2025, 8, 21))
         self.assertEqual(turno.hora, time(10, 30))
         self.assertEqual(turno.estado, "disponible")
