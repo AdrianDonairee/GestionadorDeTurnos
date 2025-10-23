@@ -65,6 +65,21 @@ class TurnoTestCase(unittest.TestCase):
         turno_obtenido = TurnoService.get_by_id(turno.id)
         self.assertIsNotNone(turno_obtenido)
         self.assertEqual(turno_obtenido.id, turno.id)  
+    
+    def test_obtenertodos_los_turnos(self):
+        """Prueba que todos los turnos puedan obtenerse"""
+        turno1 = Turno(
+            fecha=date(2025, 8, 21),
+            hora=time(10, 30)
+        )
+        turno2 = Turno(
+            fecha=date(2025, 8, 22),
+            hora=time(11, 30)
+        )
+        TurnoService.create(turno1)
+        TurnoService.create(turno2)
+        turnos = TurnoService.read_all()
+        self.assertGreaterEqual(len(turnos), 2)
 
     def test_borrar_turno(self):
         """Prueba que un turno pueda borrarse"""
