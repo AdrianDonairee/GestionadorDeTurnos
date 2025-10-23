@@ -19,3 +19,4 @@ class AgendaRepository(Read, Create, Update):
         db.session.commit()
         return agenda
 
+
