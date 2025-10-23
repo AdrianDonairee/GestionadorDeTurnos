@@ -54,7 +54,18 @@ class TurnoTestCase(unittest.TestCase):
         TurnoService.update(turno)
         
         self.assertEqual(turno.estado, "disponible")
-        
+    
+    def test_obtener_turno_por_id(self):
+        """Prueba que un turno pueda obtenerse por su ID"""
+        turno = Turno(
+            fecha=date(2025, 8, 21),
+            hora=time(10, 30)
+        )
+        TurnoService.create(turno)
+        turno_obtenido = TurnoService.get_by_id(turno.id)
+        self.assertIsNotNone(turno_obtenido)
+        self.assertEqual(turno_obtenido.id, turno.id)  
+
     def test_borrar_turno(self):
         """Prueba que un turno pueda borrarse"""
         turno = Turno(
