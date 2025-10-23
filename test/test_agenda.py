@@ -1,11 +1,19 @@
 import unittest
-from app.models.agenda import Agenda
-from app.models.turno import Turno
-from app.repositories.agenda_repository import AgendaRepository
+from app.models import Agenda, Turno
+from app.services import AgendaService
 
-class TestAgendaRepository(unittest.TestCase):
+class TestAgenda(unittest.TestCase):
     def setUp(self):
-        self.repo = AgendaRepository()
+        os.environ['FLASK_CONTEXT'] = 'testing'
+        self.app = create_app()
+        self.app_context = self.app.app_context()
+        self.app_context.push()
+        db.create_all()
+
+    def tearDown(self):
+        db.session.remove()
+        db.drop_all()
+        self.app_context.pop()
 
     def test_add_and_get_agenda(self):
         agenda_data = {"recepcionista_id": 1}

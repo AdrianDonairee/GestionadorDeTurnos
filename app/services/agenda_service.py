@@ -1,28 +1,31 @@
-from app.repositories.agenda_repository import AgendaRepository
-from app.models.agenda import Agenda
+from app.repositories import AgendaRepository
+from app.models import Agenda
 from datetime import date
 
 class AgendaService:
-    def __init__(self):
-        self.repository = AgendaRepository()
+   
 
-    
-    def listar_agendas():
-        return self.repository.get_all()
+    @staticmethod
+    def read_all():
+        repository = AgendaRepository()
+        return repository.get_all()
 
-    
-    def obtener_agenda(agenda_id):
-        return self.repository.get_by_id(agenda_id)
+    @staticmethod
+    def get_by_id(agenda_id):
+        repository = AgendaRepository()
+        return repository.get_by_id(agenda_id)
 
-    
-    def crear_agenda(fecha: date):
+    @staticmethod
+    def create(fecha: date):
+        repository = AgendaRepository()
         nueva_agenda = Agenda(fecha=fecha)
-        return self.repository.save(nueva_agenda)
+        return repository.save(nueva_agenda)
 
-    
-    def eliminar_agenda(agenda_id):
-        agenda = self.repository.get_by_id(agenda_id)
+    @staticmethod
+    def delete(agenda_id):
+        repository = AgendaRepository()
+        agenda = repository.get_by_id(agenda_id)
         if agenda:
-            self.repository.delete(agenda)
+            repository.delete(agenda)
             return True
         return False

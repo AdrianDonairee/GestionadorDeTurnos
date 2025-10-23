@@ -3,6 +3,7 @@ from app import db
 from app.models import Agenda
 
 class AgendaRepository(Read, Create, Update):
+    
     def get_by_id(self, id: int) -> Agenda:
         return db.session.query(Agenda).filter_by(id=id).first()
 
