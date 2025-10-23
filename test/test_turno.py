@@ -39,8 +39,9 @@ class TurnoTestCase(unittest.TestCase):
             fecha=date(2025, 8, 21),
             hora=time(10, 30)
         )
-        turno.asignar_cliente()
-        self.assertEqual(turno.estado, "reservado")
+        TurnoService.asignar_cliente( turno, "disponible")
+        TurnoService.update(turno)
+        self.assertEqual(turno.estado, "disponible")
 
     def test_liberar_turno(self):
         """Prueba que un turno pueda liberarse"""

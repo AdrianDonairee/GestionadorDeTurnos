@@ -4,6 +4,10 @@ from typing import List
 
 class TurnoService:
     @staticmethod
+    def asignar_cliente(turno: Turno, estado:str) -> None:
+        turno.estado = estado
+
+    @staticmethod
     def create(turno: Turno) -> Turno:
         """
         Crea un nuevo turno en la base de datos.

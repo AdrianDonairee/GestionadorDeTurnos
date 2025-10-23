@@ -16,8 +16,4 @@ class Turno(db.Model):
     agenda = db.relationship("Agenda", backref="turnos")
     
 
-    def asignar_cliente(self):
-        self.estado = "reservado"
-
-    def liberar_turno(self):
-        self.estado = "disponible"
+    
