@@ -54,6 +54,18 @@ class TurnoTestCase(unittest.TestCase):
         TurnoService.update(turno)
         
         self.assertEqual(turno.estado, "disponible")
+        
+    def test_borrar_turno(self):
+        """Prueba que un turno pueda borrarse"""
+        turno = Turno(
+            fecha=date(2025, 8, 21),
+            hora=time(10, 30)
+        )
+        TurnoService.create(turno)
+        turno_id = turno.id
+        TurnoService.delete(turno_id)
+        turno_borrado = TurnoService.get_by_id(turno_id)
+        self.assertIsNone(turno_borrado)
 
 
 if __name__ == '__main__':
