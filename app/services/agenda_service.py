@@ -3,7 +3,6 @@ from app.models import Agenda
 from datetime import date
 
 class AgendaService:
-   
 
     @staticmethod
     def read_all():
