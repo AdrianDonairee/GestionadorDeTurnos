@@ -98,6 +98,15 @@ class TurnoTestCase(unittest.TestCase):
         turno_borrado = TurnoService.get_by_id(turno_id)
         self.assertIsNone(turno_borrado)
 
+    def _create_agenda(self, fecha=date(2024, 12, 20), recepcionista=None):
+        if recepcionista is None:
+            recepcionista = self._create_recepcionista()
+        self.assertIsNotNone(recepcionista.id)
+        agenda = Agenda(
+            fecha=fecha,
+            recepcionista=recepcionista
+        )
+        return AgendaService.create(agenda)
 
 if __name__ == '__main__':
     unittest.main()

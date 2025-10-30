@@ -1,8 +1,7 @@
-from .venv.Lib.site-packages.sqlalchemy.sql._typing import Nullable
-from .venv.Lib.site-packages.sqlalchemy.sql.schema import PrimaryKeyConstraint
 from dataclasses import dataclass
+from app import db
 
-@dataclass(init=True, repr=True, eq=True)
+@dataclass(init=False, repr=True, eq=True)
 class Paciente(db.Model):
     __tablename__ = "pacientes"
     id = db.Column(db.Integer, primary_key=True,autoincrement=True)

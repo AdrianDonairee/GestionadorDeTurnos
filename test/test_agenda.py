@@ -1,6 +1,9 @@
+from datetime import date
+import os
 import unittest
-from app.models import Agenda, Turno
-from app.services import AgendaService
+from app.models import Agenda, Recepcionista
+from app.services import AgendaService, RecepcionistaService
+from app import create_app, db
 
 class TestAgenda(unittest.TestCase):
     def setUp(self):
@@ -8,47 +11,54 @@ class TestAgenda(unittest.TestCase):
         self.app = create_app()
         self.app_context = self.app.app_context()
         self.app_context.push()
+        # Crear todas las tablas antes de cada test
         db.create_all()
 
     def tearDown(self):
+        # Limpiar la base de datos después de cada test
         db.session.remove()
         db.drop_all()
         self.app_context.pop()
 
-    def test_add_and_get_agenda(self):
-        agenda_data = {"recepcionista_id": 1}
-        agenda = self.repo.add_agenda(agenda_data)
-        fetched = self.repo.get_agenda(agenda.recepcionista_id)
-        self.assertEqual(fetched.recepcionista_id, 1)
-        self.assertEqual(fetched.turnos, [])
+    def test_create_agenda(self):
+        agenda = self._create_agenda(fecha=date(2024, 12, 20))
+        
+        self.assertIsNotNone(agenda.id)
+        self.assertEqual(agenda.fecha, date(2024, 12, 20))
+        self.assertEqual(agenda.recepcionista_id, 1)
 
-    def test_list_agendas(self):
-        self.repo.add_agenda({"recepcionista_id": 1})
-        self.repo.add_agenda({"recepcionista_id": 2})
-        agendas = self.repo.list_agendas()
+    def _create_recepcionista(self):
+        recepcionista = Recepcionista(
+            nombre="Ana",
+            email="ana@mail.com",
+        )
+        recepcionista = RecepcionistaService.create(recepcionista)
+        return recepcionista
+
+    def test_get_agenda_by_id(self):
+        agenda = self._create_agenda(fecha=date(2024, 12, 20))
+
+        fetched_agenda = AgendaService.get_by_id(agenda.id)
+        self.assertIsNotNone(fetched_agenda)
+        self.assertEqual(fetched_agenda.fecha, date(2024, 12, 20))
+
+    def test_read_all_agendas(self):
+        agenda1 = self._create_agenda(fecha=date(2024, 12, 20))
+        agenda2 = self._create_agenda(fecha=date(2024, 12, 21))
+
+        agendas = AgendaService.read_all()
         self.assertEqual(len(agendas), 2)
-        self.assertEqual(agendas[0].recepcionista_id, 1)
-        self.assertEqual(agendas[1].recepcionista_id, 2)
 
-    def test_delete_agenda(self):
-        agenda = self.repo.add_agenda({"recepcionista_id": 3})
-        result = self.repo.delete_agenda(agenda.recepcionista_id)
-        self.assertTrue(result)
-        self.assertIsNone(self.repo.get_agenda(agenda.recepcionista_id))
 
-    def test_update_agenda(self):
-        agenda = self.repo.add_agenda({"recepcionista_id": 4})
-        updated = self.repo.update_agenda(agenda.recepcionista_id, {"recepcionista_id": 5})
-        self.assertEqual(updated.recepcionista_id, 5)
-
-    def test_agregar_y_eliminar_turno(self):
-        agenda = self.repo.add_agenda({"recepcionista_id": 6})
-        turno = Turno(id=1, paciente_id=1, fecha="2025-10-17")
-        agenda.agregar_turno(turno)
-        self.assertEqual(len(agenda.turnos), 1)
-        self.assertEqual(agenda.turnos[0].id, 1)
-        agenda.eliminar_turno(turno)
-        self.assertEqual(len(agenda.turnos), 0)
+    def _create_agenda(self, fecha=date(2024, 12, 20), recepcionista=None):
+        if recepcionista is None:
+            recepcionista = self._create_recepcionista()
+        self.assertIsNotNone(recepcionista.id)
+        agenda = Agenda(
+            fecha=fecha,
+            recepcionista=recepcionista
+        )
+        return AgendaService.create(agenda)
 
 if __name__ == "__main__":
     unittest.main()

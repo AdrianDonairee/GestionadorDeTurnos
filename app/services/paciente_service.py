@@ -1,24 +1,32 @@
-from app.models.paciente import Paciente
-from app.repositories.paciente_repository import PacienteRepository
+from app.models import Paciente
+from app.repositories import PacienteRepository
 
 class PacienteService:
-    def __init__(self):
-        self.repository = PacienteRepository()
+    @staticmethod
+    def read_all():
+        repository = PacienteRepository()
+        return repository.get_all()
 
-    def registrar_paciente(self, nombre, apellido, dni, email, fechadenacimiento, telefono):
-        paciente = Paciente(
-            nombre=nombre,
-            apellido=apellido,
-            dni=dni,
-            email=email,
-            fechadenacimiento=fechadenacimiento,
-            telefono=telefono
-        )
-        paciente_id, paciente_guardado = self.repository.save(paciente)
-        return paciente_id, paciente_guardado
+    @staticmethod
+    def get_by_id(paciente_id):
+        repository = PacienteRepository()
+        return repository.get_by_id(paciente_id)
+    @staticmethod
+    def create(paciente:Paciente):
+        repository = PacienteRepository()
+        
+        return repository.save(paciente)
 
-    def obtener_paciente(self, paciente_id: int):
-        return self.repository.get_by_id(paciente_id)
+    @staticmethod
+    def delete(paciente_id):
+        repository = PacienteRepository()
+        paciente = repository.get_by_id(paciente_id)
+        if paciente:
+            repository.delete(paciente)
+            return True
+        return False
     
-    def obtener_todos_los_pacientes(self):
-        return self.repository.get_all()
+    @staticmethod
+    def update(paciente: Paciente):
+        repository = PacienteRepository()
+        return repository.update(paciente)

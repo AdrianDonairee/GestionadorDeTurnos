@@ -1,6 +1,6 @@
 from app.repositories import AgendaRepository
 from app.models import Agenda
-from datetime import date
+from datetime import datetime
 
 class AgendaService:
 
@@ -15,10 +15,9 @@ class AgendaService:
         return repository.get_by_id(agenda_id)
 
     @staticmethod
-    def create(fecha: date):
+    def create(agenda: Agenda):
         repository = AgendaRepository()
-        nueva_agenda = Agenda(fecha=fecha)
-        return repository.save(nueva_agenda)
+        return repository.save(agenda)
 
     @staticmethod
     def delete(agenda_id):

@@ -1,4 +1,4 @@
-from app.repositories.bases_repository import Read
+from app.repositories import Read, Create, Update
 from app import db
 from app.models import Agenda
 

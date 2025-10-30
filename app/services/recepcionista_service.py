@@ -1,14 +1,33 @@
-from app.models.recepcionista import Recepcionista
-from app.repositories.recepcionista_repository import RecepcionistaRepository
+from app.models import Recepcionista
+from app.repositories import RecepcionistaRepository
 
 class RecepcionistaService:
-    def __init__(self, repository: RecepcionistaRepository):
-        self.repository = repository
+    @staticmethod
+    def read_all():
+        repository = RecepcionistaRepository()
+        return repository.get_all()
 
-    def registrar_recepcionista(self, nombre, email):
-        recepcionista = Recepcionista(nombre, email)
-        recepcionista_id, recepcionista_guardado = self.repository.save(recepcionista)
-        return recepcionista_id, recepcionista_guardado
+    @staticmethod
+    def get_by_id(recepcionista_id):
+        repository = RecepcionistaRepository()
+        return repository.get_by_id(recepcionista_id)
 
-    def obtener_recepcionista(self, recepcionista_id):
-        return self.repository.get_by_id(recepcionista_id)
+    @staticmethod
+    def create(recepcionista: Recepcionista):
+        repository = RecepcionistaRepository()
+        
+        return repository.save(recepcionista)
+
+    @staticmethod
+    def delete(recepcionista_id):
+        repository = RecepcionistaRepository()
+        recepcionista = repository.get_by_id(recepcionista_id)
+        if recepcionista:
+            repository.delete(recepcionista)
+            return True
+        return False
+
+    @staticmethod
+    def update(recepcionista: Recepcionista):
+        repository = RecepcionistaRepository()
+        return repository.update(recepcionista)
