@@ -50,3 +50,6 @@ class TestTurnoService(unittest.TestCase):
         fetched = Turno.query.get(turno.id)
         self.assertEqual(fetched.estado, "ocupado")
 
+if __name__ == '__main__':
+    unittest.main()
+

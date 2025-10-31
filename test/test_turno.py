@@ -41,3 +41,6 @@ class TurnoTestCase(unittest.TestCase):
 
         turno_db = Turno.query.first()
         self.assertEqual(turno_db.estado, "ocupado")
+
+if __name__ == '__main__':
+    unittest.main()
