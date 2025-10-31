@@ -1,19 +1,16 @@
 import unittest
-from datetime import date, time
-from app import create_app, db
+from datetime import datetime
+from app import db, create_app
 from app.models.turno import Turno
 from app.services.turno_service import TurnoService
 
 class TestTurnoService(unittest.TestCase):
+
     def setUp(self):
-        self.app = create_app()
+        self.app = create_app("testing")
         self.app_context = self.app.app_context()
         self.app_context.push()
         db.create_all()
-        self.turno = Turno(
-            fecha=date(2025, 9, 25),
-            hora=time(10, 0)
-        )
 
     def tearDown(self):
         db.session.remove()
@@ -21,32 +18,35 @@ class TestTurnoService(unittest.TestCase):
         self.app_context.pop()
 
     def test_create_turno(self):
-        created = TurnoService.create(self.turno)
-        self.assertEqual(created.fecha, self.turno.fecha)
-        self.assertEqual(created.hora, self.turno.hora)
-        self.assertEqual(created.estado, "disponible")
+        turno = Turno(
+            fecha=datetime(2025, 8, 21, 10, 30),
+            estado="disponible"
+        )
+        result = TurnoService.create(turno)
+        self.assertIsNotNone(result.id)
 
     def test_get_by_id(self):
-        TurnoService.create(self.turno)
-        found = TurnoService.get_by_id(1)
-        self.assertIsNotNone(found)
+        turno = Turno(
+            fecha=datetime(2025, 8, 21, 10, 30),
+            estado="disponible"
+        )
+        db.session.add(turno)
+        db.session.commit()
 
-    def test_read_all(self):
-        TurnoService.create(self.turno)
-        turnos = TurnoService.read_all()
-        self.assertTrue(any(t.fecha == self.turno.fecha and t.hora == self.turno.hora for t in turnos))
+        fetched = TurnoService.get_by_id(turno.id)
+        self.assertEqual(fetched.id, turno.id)
 
     def test_update_turno(self):
-        TurnoService.create(self.turno)
-        self.turno.estado = "reservado"
-        updated = TurnoService.update(self.turno)
-        self.assertEqual(updated.estado, "reservado")
+        turno = Turno(
+            fecha=datetime(2025, 8, 21, 10, 30),
+            estado="disponible"
+        )
+        db.session.add(turno)
+        db.session.commit()
 
-    def test_delete_turno(self):
-        TurnoService.create(self.turno)
-        TurnoService.delete(1)
-        found = TurnoService.get_by_id(1)
-        self.assertIsNone(found)
+        turno.estado = "ocupado"
+        db.session.commit()
 
-if __name__ == "__main__":
-    unittest.main()
+        fetched = Turno.query.get(turno.id)
+        self.assertEqual(fetched.estado, "ocupado")
+

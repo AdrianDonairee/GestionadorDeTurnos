@@ -4,50 +4,32 @@ from typing import List
 
 class TurnoService:
     @staticmethod
-    def asignar_cliente(turno: Turno, estado:str) -> None:
+    def asignar_cliente(turno: Turno, estado: str) -> None:
         turno.estado = estado
 
     @staticmethod
     def create(turno: Turno) -> Turno:
-        """
-        Crea un nuevo turno en la base de datos.
-        :param turno: Objeto Turno a crear.
-        :return: El objeto Turno creado.
-        """
-        TurnoRepository.create(turno)
+        repo = TurnoRepository()
+        repo.save(turno)
         return turno
 
     @staticmethod
     def get_by_id(id: int) -> Turno:
-        """
-        Recupera un turno por su ID.
-        :param id: ID del turno a recuperar.
-        :return: Objeto Turno si existe, sino None.
-        """
-        return TurnoRepository.get_by_id(id)
+        repo = TurnoRepository()
+        return repo.get_by_id(id)
 
     @staticmethod
     def read_all() -> List[Turno]:
-        """
-        Recupera todos los turnos de la base de datos.
-        :return: Lista de objetos Turno.
-        """
-        return TurnoRepository.read_all()
+        repo = TurnoRepository()
+        return repo.get_all()
 
     @staticmethod
     def update(turno: Turno) -> Turno:
-        """
-        Actualiza un turno existente.
-        :param turno: Objeto Turno con datos actualizados.
-        :return: El turno actualizado.
-        """
-        TurnoRepository.update(turno)
-        return turno
+        repo = TurnoRepository()
+        return repo.update(turno)
 
     @staticmethod
     def delete(id: int) -> None:
-        """
-        Elimina un turno por su ID.
-        :param id: ID del turno a eliminar.
-        """
-        TurnoRepository.delete(id)
+        repo = TurnoRepository()
+        repo.delete_by_id(id)
+
