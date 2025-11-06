@@ -6,8 +6,9 @@ import os
 
 class DbTestCase(unittest.TestCase):
 
+    # Tests para verificar la configuración y conexión a la base de datos
     def setUp(self):
-        # Indicar que se quiere usar la configuración de testing
+        # Crear app en modo testing y preparar contexto
         self.app = create_app('testing')
         self.app_context = self.app.app_context()
         self.app_context.push()
@@ -22,12 +23,12 @@ class DbTestCase(unittest.TestCase):
         self.app_context.pop()
 
     def test_app(self):
-        # Verifica que la app existe
+        # Verifica que la app fue creada
         self.assertIsNotNone(current_app)
 
     def test_db_connection(self):
-        # Verifica que la base de datos funciona ejecutando un query simple
-        result = db.session.query(text("'hello world'")).one()
+        # Ejecuta una consulta simple para confirmar que DB responde
+        result = db.session.query(text("'hello world'")) .one()
         self.assertEqual(result[0], 'hello world')
 
 

@@ -1,4 +1,4 @@
 from app import create_app
 
-# expose `app` variable so gunicorn can import it with `run:app`
+# Exponer la variable `app` para que gunicorn la importe con `run:app`
 app = create_app('production')

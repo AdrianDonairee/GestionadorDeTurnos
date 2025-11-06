@@ -8,8 +8,10 @@ from app import db
 import os
 
 class PacienteTestCase(unittest.TestCase):
+    # Tests para la entidad Paciente: crear, leer, actualizar y borrar
 
     def setUp(self):
+        # Preparar app en modo testing y crear tablas
         os.environ['FLASK_CONTEXT'] = 'testing'
         self.app = create_app()
         self.app_context = self.app.app_context()
@@ -24,9 +26,11 @@ class PacienteTestCase(unittest.TestCase):
         self.app_context.pop()
 
     def test_app(self):
+        # Verificar que la app existe
         self.assertIsNotNone(current_app)
         
     def test_registrar_paciente(self):
+        # Registrar paciente y validar campos
         paciente = self._registrar_paciente()
 
         self.assertEqual(paciente.id, 1)
@@ -36,17 +40,20 @@ class PacienteTestCase(unittest.TestCase):
         self.assertEqual(paciente.dni, "12345678")
 
     def test_obtener_paciente(self):
+        # Obtener paciente por id
         paciente = self._registrar_paciente()
         paciente = PacienteService.get_by_id(paciente.id)
         self.assertIsNotNone(paciente)
         self.assertEqual(paciente.apellido, "Pérez")
 
     def test_obtener_pacientes(self):
+        # Listar pacientes
         self._registrar_paciente()
         pacientes = PacienteService.read_all()
         self.assertEqual(len(pacientes), 1)
 
     def test_actualizar_paciente(self):
+        # Actualizar campos de un paciente
         paciente = self._registrar_paciente()
         paciente.nombre = "Carlos"
         paciente.apellido = "Gomez"
@@ -77,6 +84,7 @@ class PacienteTestCase(unittest.TestCase):
         return paciente
 
     def test_eliminar_paciente(self):
+        # Eliminar paciente y comprobar que ya no existe
         paciente = self._registrar_paciente()
         eliminado = PacienteService.delete(paciente.id)
         self.assertTrue(eliminado)
