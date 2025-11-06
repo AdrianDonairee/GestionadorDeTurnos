@@ -4,7 +4,6 @@ from app.repositories import Read, Update, Delete, Create
 
 
 class TurnoRepository(Read, Create, Update, Delete):
-    # Repositorio para la entidad Turno.
     # Implementa operaciones CRUD sobre la tabla de turnos usando SQLAlchemy.
 
     # Devolver el turno con el id dado, o None si no existe.

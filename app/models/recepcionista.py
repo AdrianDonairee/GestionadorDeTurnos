@@ -3,7 +3,7 @@ from app import db
 
 @dataclass
 class Recepcionista(db.Model):
-    # Modelo Recepcionista.
+    
     # Representa a una recepcionista del consultorio.
     # Atributos principales: id, nombre, email.
     __tablename__ = "recepcionistas"

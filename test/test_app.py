@@ -3,8 +3,6 @@ from flask import current_app
 from app import create_app
 import os
 
-# Test básico: verificar que la aplicación Flask se crea correctamente
-
 class AppTestCase(unittest.TestCase):
 
     def setUp(self):

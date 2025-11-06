@@ -4,7 +4,6 @@ from app.models import Agenda
 
 
 class AgendaRepository(Read, Create, Update):
-    # Repositorio para la entidad Agenda.
 
     # Devolver la agenda con el id dado, o None si no existe.
     def get_by_id(self, id: int) -> Agenda:

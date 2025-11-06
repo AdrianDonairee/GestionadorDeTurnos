@@ -3,7 +3,7 @@ from app import db
 
 @dataclass(init=False, repr=True, eq=True)
 class Paciente(db.Model):
-    # Modelo Paciente.
+    
     # Atributos:
     # - id: identificador único del paciente
     # - nombre, apellido, dni, email, fechadenacimiento, telefono

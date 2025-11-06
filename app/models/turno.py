@@ -4,7 +4,7 @@ from app import db
 
 @dataclass
 class Turno(db.Model):
-    # Modelo Turno.
+    
     # Representa un turno médico con fecha, estado y relaciones a paciente y agenda.
     __tablename__ = 'turnos'
 

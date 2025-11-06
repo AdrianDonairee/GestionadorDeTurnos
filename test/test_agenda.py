@@ -31,7 +31,7 @@ class TestAgenda(unittest.TestCase):
         self.assertEqual(agenda.recepcionista_id, 1)
 
     def _create_recepcionista(self):
-        # Helper: crear una recepcionista persistida
+        # crear una recepcionista persistida
         recepcionista = Recepcionista(
             nombre="Ana",
             email="ana@mail.com",
@@ -57,7 +57,6 @@ class TestAgenda(unittest.TestCase):
 
 
     def _create_agenda(self, fecha=date(2024, 12, 20), recepcionista=None):
-        # Helper: crear y persistir una agenda
         if recepcionista is None:
             recepcionista = self._create_recepcionista()
         self.assertIsNotNone(recepcionista.id)
