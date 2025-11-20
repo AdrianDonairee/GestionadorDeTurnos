@@ -76,6 +76,8 @@ def print_menu():
 def mostrar_turnos_disponibles():
     turnos = TurnoService.read_all()
     disponibles = [t for t in turnos if getattr(t, 'estado', 'disponible') == 'disponible']
+    # Ordenar por id para mostrar 1..N de forma determinista
+    disponibles.sort(key=lambda t: getattr(t, 'id', 0))
     clear_screen()
     if not disponibles:
         print(FG_YELLOW + 'No hay turnos disponibles.' + RESET)
@@ -123,15 +125,39 @@ def reservar_turno():
         p = Paciente()
         p.nombre = input('Nombre: ').strip()
         p.apellido = input('Apellido: ').strip()
-        p.dni = input('DNI: ').strip()
+        # Pedir DNI y validar que contenga sólo dígitos y como máximo 10 caracteres.
+        while True:
+            dni_raw = input('DNI (hasta 10 dígitos): ').strip()
+            dni_digits = ''.join(ch for ch in dni_raw if ch.isdigit())
+            if len(dni_digits) == 0:
+                print(FG_RED + 'DNI inválido. Debe contener al menos 1 dígito.' + RESET)
+                continue
+            if len(dni_digits) > 10:
+                print(FG_RED + 'DNI demasiado largo. Máximo 10 dígitos.' + RESET)
+                continue
+            p.dni = dni_digits
+            break
         p.email = input('Email: ').strip()
-        fd = input('Fecha de nacimiento (YYYY-MM-DD): ').strip()
-        try:
-            p.fechadenacimiento = datetime.strptime(fd, '%Y-%m-%d').date()
-        except Exception:
-            print('Fecha inválida.')
-            return
-        p.telefono = input('Teléfono: ').strip()
+        # Pedir la fecha hasta que el formato sea válido (YYYY-MM-DD).
+        # No se sale de la operación; se insiste hasta que el usuario introduzca
+        # una fecha correcta.
+        while True:
+            fd = input('Fecha de nacimiento (YYYY-MM-DD): ').strip()
+            try:
+                p.fechadenacimiento = datetime.strptime(fd, '%Y-%m-%d').date()
+                break
+            except Exception:
+                print(FG_RED + 'Fecha inválida. Introduzca de nuevo en formato YYYY-MM-DD.' + RESET)
+        # Pedir teléfono y validar que tenga exactamente 10 dígitos.
+        while True:
+            tel_raw = input('Teléfono (10 dígitos): ').strip()
+            # Extraer sólo dígitos para permitir separadores ocasionales
+            digits = ''.join(ch for ch in tel_raw if ch.isdigit())
+            if len(digits) != 10:
+                print(FG_RED + 'Teléfono inválido. Debe contener exactamente 10 dígitos.' + RESET)
+                continue
+            p.telefono = digits
+            break
         paciente = PacienteService.create(p)
         print(f'Paciente creado id={paciente.id}')
 
@@ -169,6 +195,8 @@ def listar_reservas():
     clear_screen()
     turnos = TurnoService.read_all()
     reservados = [t for t in turnos if getattr(t, 'estado', None) and t.estado != 'disponible']
+    # Ordenar por id para mostrar reservas en orden creciente de id
+    reservados.sort(key=lambda t: getattr(t, 'id', 0))
     section_header('Reservas')
     if not reservados:
         print(FG_YELLOW + 'No hay reservas.' + RESET)

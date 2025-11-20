@@ -1,12 +1,9 @@
-#!/usr/bin/env python3
 """Eliminar un paciente por id desde la CLI.
 
 Uso:
 python ./scripts/delete_paciente.py <id>
-
-Ejemplo:
-python ./scripts/delete_paciente.py 3
 """
+
 import sys
 from pathlib import Path
 

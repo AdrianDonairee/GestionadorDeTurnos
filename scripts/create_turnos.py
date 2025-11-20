@@ -2,10 +2,7 @@
 """Crear turnos para tener al menos N turnos (por defecto 16).
 
 Uso:
-  python ./scripts/create_turnos.py [N]
-
-Ejemplo:
-  python ./scripts/create_turnos.py 16
+python ./scripts/create_turnos.py [N]
 
 El script crea turnos con fechas futuras si faltan para llegar a N.
 No modifica ni renumera IDs existentes.

@@ -15,7 +15,9 @@ class TurnoRepository(Read, Create, Update, Delete):
         return db.session.query(Turno).filter_by(id=id).first()
 
     def get_all(self) -> list[Turno]:
-        return db.session.query(Turno).order_by(Turno.fecha).all()
+        """Ordenar por fecha y por id para garantizar un orden determinista
+        cuando varias filas comparten la misma marca de tiempo."""
+        return db.session.query(Turno).order_by(Turno.fecha, Turno.id).all()
 
     def save(self, turno: Turno) -> Turno:
         """Inserta un nuevo turno y devuelve la entidad persistida."""

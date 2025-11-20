@@ -21,7 +21,7 @@ El sistema está orientado a la gestión de turnos médicos, permitiendo a los a
 
 - **Lenguaje:** Python 3
 - **Framework:** Flask
-- **Base de datos:** MySQL (servidor)
+- **Base de datos:** Postgesql
 - **Interfaz:** Consola o interfaz mínima con Tkinter
 - **Contenedores:** Docker
 - **IDE:** Visual Studio
@@ -68,7 +68,7 @@ uv add "Flask-SQLAlchemy==3.1.1"
 uv add 'mysql-connector-python==9.4.0'
 
 ## ejecutar proyecto en modo desarrollo
-uv run flask run
+uv run python .\scripts\run_gestion_turnos.py
 
 ## Integrantes
 
@@ -131,7 +131,7 @@ python manage.py runserver --host 0.0.0.0 --port 5000 --debug
 
 Notas:
 - `manage.py` usa por defecto el contexto `development` al ejecutar comandos. Si quieres ejecutar sobre `testing` o `production`, pregunta y añado una opción `--context` para elegirlo.
-- Asegúrate de activar el entorno virtual antes de ejecutar los comandos: `.\.venv\Scripts\Activate.ps1`.
+- Asegúrate de activar el entorno virtual antes de ejecutar los comandos: `.\.venv\Scripts\Activate`.
 - Si ves advertencias de marshmallow/flask-marshmallow, instala las dependencias en el venv con:
 ```powershell
 python -m pip install marshmallow==3.19.0 marshmallow-sqlalchemy==0.29.0
