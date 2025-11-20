@@ -1,11 +1,15 @@
 from dataclasses import dataclass
 from app import db
 
+"""Modelo `Turno`.
+
+Representa una cita con fecha y estado; enlaza opcionalmente con un
+`Paciente` y una `Agenda`. Se utiliza para reservar y cancelar turnos.
+"""
+
 
 @dataclass
 class Turno(db.Model):
-    
-    # Representa un turno médico con fecha, estado y relaciones a paciente y agenda.
     __tablename__ = 'turnos'
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)

@@ -1,12 +1,19 @@
 from dataclasses import dataclass
 from app import db
 
+"""Modelo de datos `Paciente`.
+
+Representa un paciente con los campos mínimos necesarios para el sistema:
+- `id`: clave primaria autoincremental.
+- `nombre`, `apellido`, `dni`, `email`, `fechadenacimiento`, `telefono`.
+
+Se usa con SQLAlchemy y está anotado con `dataclass` para facilitar la
+serialización en vistas y pruebas.
+"""
+
+
 @dataclass(init=False, repr=True, eq=True)
 class Paciente(db.Model):
-    
-    # Atributos:
-    # - id: identificador único del paciente
-    # - nombre, apellido, dni, email, fechadenacimiento, telefono
     __tablename__ = "pacientes"
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)

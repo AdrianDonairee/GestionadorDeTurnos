@@ -1,3 +1,9 @@
+"""Recursos HTTP relacionados con `Paciente`.
+
+Define endpoints para listar, obtener, actualizar y eliminar pacientes.
+Las respuestas usan `PacienteSchema` para serializar/deserializar.
+"""
+
 from app.models import Paciente
 from app.services.paciente_service import PacienteService
 from app.mapping import PacienteSchema
@@ -14,7 +20,7 @@ paciente_schema = PacienteSchema()
 def get_pacientes():
     pacientes = PacienteService.read_all()
     return paciente_schema.dump(pacientes, many=True), 200
-    
+
 
 @paciente_bp.route('/pacientes/<int:id>/', methods=['GET'])
 def get_paciente(id):
@@ -22,7 +28,7 @@ def get_paciente(id):
     if not paciente:
         return jsonify({'message': 'Paciente no encontrado'}), 404
     return paciente_schema.dump(paciente), 200
-    
+
 
 @paciente_bp.route('/pacientes/<int:id>/', methods=['DELETE'])
 def delete_paciente(id):
@@ -30,6 +36,7 @@ def delete_paciente(id):
     if deleted:
         return jsonify({"message": f"Paciente {id} eliminado"}), 200
     return jsonify({"message": f"Paciente {id} no encontrado"}), 404
+
 
 @paciente_bp.route('/pacientes/<int:id>/', methods=['PUT'])
 def update_paciente(id):
