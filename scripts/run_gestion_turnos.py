@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """CLI interactivo para gestionar turnos desde la terminal.
 
-Funciones:
+Functions:
 - Mostrar turnos disponibles
 - Reservar un turno (crear paciente o usar existente)
 - Cancelar un turno
@@ -10,6 +10,7 @@ Funciones:
 from datetime import datetime
 import sys
 import os
+import shutil
 from pathlib import Path
 
 # Add project root to sys.path so `from app import ...` works when running this script
@@ -22,27 +23,73 @@ from app.services.turno_service import TurnoService
 from app.services.paciente_service import PacienteService
 from app.models import Paciente, Turno
 
+# Colores ANSI simples (funcionan en la mayoría de terminales modernos)
+RESET = '\x1b[0m'
+BOLD = '\x1b[1m'
+FG_CYAN = '\x1b[36m'
+FG_GREEN = '\x1b[32m'
+FG_YELLOW = '\x1b[33m'
+FG_RED = '\x1b[31m'
+FG_MAGENTA = '\x1b[35m'
+FG_BLUE = '\x1b[34m'
 
+
+def clear_screen():
+    os.system('cls' if os.name == 'nt' else 'clear')
+
+
+def section_header(title: str, width: int = 60):
+    """Imprime un encabezado de sección con borde pequeño y colores."""
+    w = max(40, min(width, shutil.get_terminal_size((80, 20)).columns - 10))
+    line = '─' * (w - 4)
+    print('\n' + FG_CYAN + BOLD + f'┌{line}┐' + RESET)
+    print(FG_CYAN + BOLD + f'│{title.center(w - 4)}│' + RESET)
+    print(FG_CYAN + BOLD + f'└{line}┘' + RESET)
+    print()
+
+
+def pause_after_action():
+    """Pausa tras una acción. Devuelve True si el usuario quiere salir ('5')."""
+    s = input(FG_YELLOW + "Presiona ENTER para volver al menú (o escribe '5' para salir): " + RESET).strip()
+    return s == '5'
+# Presentación con colores y borde dinámico según ancho de terminal
 def print_menu():
-    print('\nBienvenido al Gestor de Turnos ')
-    print('\nElige una opción:')
-    print('1) Mostrar turnos disponibles')
-    print('2) Reservar un turno')
-    print('3) Cancelar un turno')
-    print('4) Listar reservas')
-    print('5) Salir')
+    cols = shutil.get_terminal_size((80, 20)).columns
+    cols = max(50, min(cols, 100))
+    title = 'Gestor de Turnos'
+    line = '═' * (cols - 4)
+    print('\n' + FG_CYAN + BOLD + f'╔{line}╗' + RESET)
+    print(FG_CYAN + BOLD + f'║{title.center(cols - 4)}║' + RESET)
+    print(FG_CYAN + BOLD + f'╚{line}╝' + RESET)
+    print()
+    print(FG_YELLOW + 'Elige una opción (escribe el número y pulsa ENTER):' + RESET)
+    print()
+    print(FG_GREEN + ' 1) ' + RESET + 'Mostrar turnos disponibles')
+    print(FG_GREEN + ' 2) ' + RESET + 'Reservar un turno')
+    print(FG_GREEN + ' 3) ' + RESET + 'Cancelar un turno')
+    print(FG_GREEN + ' 4) ' + RESET + 'Listar reservas')
+    print(FG_RED +   ' 5) ' + RESET + 'Salir')
+    print()
+    print()
 
 
 def mostrar_turnos_disponibles():
     turnos = TurnoService.read_all()
     disponibles = [t for t in turnos if getattr(t, 'estado', 'disponible') == 'disponible']
+    clear_screen()
     if not disponibles:
-        print('No hay turnos disponibles.')
-        return
-    print('\nTurnos disponibles:')
+        print(FG_YELLOW + 'No hay turnos disponibles.' + RESET)
+        return pause_after_action()
+    section_header('Turnos disponibles')
+    print(FG_MAGENTA + BOLD + f"{'ID'.ljust(6)} {'Fecha'.ljust(20)} {'Agenda'.ljust(10)} {'Estado'.ljust(12)}" + RESET)
+    print('-' * 60)
     for t in disponibles:
-        fecha = t.fecha.strftime('%Y-%m-%d %H:%M') if hasattr(t, 'fecha') and t.fecha else 'sin fecha'
-        print(f"ID={t.id} | Fecha={fecha} | Agenda={getattr(t, 'agenda_id', None)} | Estado={t.estado}")
+        fecha = t.fecha.strftime('%Y-%m-%d %H:%M') if getattr(t, 'fecha', None) else 'sin fecha'
+        estado = getattr(t, 'estado', 'desconocido')
+        color = FG_GREEN if estado == 'disponible' else FG_RED
+        print(color + f"{str(t.id).ljust(6)} {fecha.ljust(20)} {str(getattr(t,'agenda_id',None)).ljust(10)} {estado.ljust(12)}" + RESET)
+    print()
+    return pause_after_action()
 
 
 def reservar_turno():
@@ -93,7 +140,8 @@ def reservar_turno():
     turno.paciente_id = paciente.id
     TurnoService.asignar_cliente(turno, 'reservado')
     TurnoService.update(turno)
-    print(f'Turno {turno.id} reservado para {paciente.nombre} {paciente.apellido}.')
+    print(FG_GREEN + f'✅ Turno {turno.id} reservado para {paciente.nombre} {paciente.apellido}.' + RESET)
+    return pause_after_action()
 
 
 def cancelar_turno():
@@ -113,35 +161,31 @@ def cancelar_turno():
     turno.paciente_id = None
     TurnoService.asignar_cliente(turno, 'disponible')
     TurnoService.update(turno)
-    print(f'Turno {tid} cancelado y vuelto a disponible.')
+    print(FG_GREEN + f'✅ Turno {tid} cancelado y vuelto a disponible.' + RESET)
+    return pause_after_action()
 
 
 def listar_reservas():
+    clear_screen()
     turnos = TurnoService.read_all()
     reservados = [t for t in turnos if getattr(t, 'estado', None) and t.estado != 'disponible']
+    section_header('Reservas')
     if not reservados:
-        print('No hay reservas.')
-        return
-    print('\nReservas:')
+        print(FG_YELLOW + 'No hay reservas.' + RESET)
+        return pause_after_action()
+    print(FG_MAGENTA + BOLD + f"{'ID'.ljust(6)} {'Fecha'.ljust(20)} {'Paciente'.ljust(25)} {'Estado'.ljust(12)}" + RESET)
+    print('-' * 80)
     for t in reservados:
-        fecha = t.fecha.strftime('%Y-%m-%d %H:%M') if t.fecha else 'sin fecha'
+        fecha = t.fecha.strftime('%Y-%m-%d %H:%M') if getattr(t, 'fecha', None) else 'sin fecha'
         paciente = getattr(t, 'paciente', None)
         if paciente:
             nombre = f"{paciente.nombre} {paciente.apellido} (id={paciente.id})"
         else:
             nombre = f"Paciente id={t.paciente_id}"
-        print(f"Turno ID={t.id} | Fecha={fecha} | Paciente={nombre} | Estado={t.estado}")
-
-
-def chat():
-    print('\nModo chat. Escribe mensajes (vacío para salir).')
-    while True:
-        line = input('> ').strip()
-        if line == '':
-            print('Saliendo de chat.')
-            break
-        # Para ahora, solo repetimos. Aquí podrías integrar un bot más avanzado.
-        print('Bot: ', line)
+        estado = getattr(t, 'estado', 'desconocido')
+        print(FG_GREEN + f"{str(t.id).ljust(6)} {fecha.ljust(20)} {nombre.ljust(25)} {estado.ljust(12)}" + RESET)
+    print()
+    return pause_after_action()
 
 
 def main():
@@ -151,18 +195,24 @@ def main():
             print_menu()
             opt = input('> ').strip()
             if opt == '1':
-                mostrar_turnos_disponibles()
+                post = mostrar_turnos_disponibles()
             elif opt == '2':
-                reservar_turno()
+                post = reservar_turno()
             elif opt == '3':
-                cancelar_turno()
+                post = cancelar_turno()
             elif opt == '4':
-                listar_reservas()
+                post = listar_reservas()
             elif opt == '5':
                 print('Adiós.')
                 break
             else:
                 print('Opción inválida.')
+                post = None
+
+            if post:
+                print('Adiós.')
+                break
+            
 
 
 if __name__ == '__main__':
