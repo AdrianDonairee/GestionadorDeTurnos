@@ -56,7 +56,7 @@ def pause_after_action():
 def print_menu():
     cols = shutil.get_terminal_size((80, 20)).columns
     cols = max(50, min(cols, 100))
-    title = 'Gestor de Turnos'
+    title = 'Gestor de Turnos - Médicos'
     line = '═' * (cols - 4)
     print('\n' + FG_CYAN + BOLD + f'╔{line}╗' + RESET)
     print(FG_CYAN + BOLD + f'║{title.center(cols - 4)}║' + RESET)
