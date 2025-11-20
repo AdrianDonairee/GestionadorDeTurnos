@@ -1,4 +1,43 @@
 from app.models import Paciente
+from app.services.paciente_service import PacienteService
+from app.mapping import PacienteSchema
+
+from flask import Blueprint, jsonify, request
+
+
+paciente_bp = Blueprint('paciente', __name__)
+
+paciente_schema = PacienteSchema()
+
+
+@paciente_bp.route('/pacientes/', methods=['GET'])
+def get_pacientes():
+    pacientes = PacienteService.read_all()
+    return paciente_schema.dump(pacientes, many=True), 200
+    
+
+@paciente_bp.route('/pacientes/<int:id>/', methods=['GET'])
+def get_paciente(id):
+    paciente = PacienteService.get_by_id(id)
+    if not paciente:
+        return jsonify({'message': 'Paciente no encontrado'}), 404
+    return paciente_schema.dump(paciente), 200
+    
+
+@paciente_bp.route('/pacientes/<int:id>/', methods=['DELETE'])
+def delete_paciente(id):
+    deleted = PacienteService.delete(id)
+    if deleted:
+        return jsonify({"message": f"Paciente {id} eliminado"}), 200
+    return jsonify({"message": f"Paciente {id} no encontrado"}), 404
+
+@paciente_bp.route('/pacientes/<int:id>/', methods=['PUT'])
+def update_paciente(id):
+    paciente = paciente_schema.load(request.get_json(),many=False)
+    setattr(paciente, 'id', id)
+    updated = PacienteService.update(paciente)
+    return paciente_schema.dump(updated), 200
+from app.models import Paciente
 from app.services import PacienteService
 from app.mapping import PacienteSchema
 

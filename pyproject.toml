@@ -8,9 +8,11 @@ dependencies = [
     "dotenv==0.9.9",
     "flask==3.1.1",
     "flask-marshmallow==1.3.0",
+    "marshmallow==3.19.0",
     "flask-sqlalchemy==3.1.1",
     "psycopg[binary]>=3.2.9",
     "pyrefly>=0.29.1",
     "python-dotenv==1.1.1",
     "sqlalchemy==2.0.43",
+    "marshmallow-sqlalchemy==0.29.0",
 ]

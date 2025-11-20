@@ -1,6 +1,9 @@
+import logging
 from app.repositories import Read, Update, Delete, Create
 from app.models import Paciente
 from app import db
+
+logger = logging.getLogger(__name__)
 
 
 class PacienteRepository(Read, Create, Update, Delete):
@@ -19,12 +22,14 @@ class PacienteRepository(Read, Create, Update, Delete):
     def save(self, paciente: Paciente) -> Paciente:
         db.session.add(paciente)
         db.session.commit()
+        logger.info('Paciente guardado en BD: id=%s nombre=%s %s', getattr(paciente, 'id', None), paciente.nombre, paciente.apellido)
         return paciente
 
     # Actualizar los datos de un paciente existente y retornarlo.
     def update(self, paciente: Paciente) -> Paciente:
         db.session.merge(paciente)
         db.session.commit()
+        logger.info('Paciente actualizado en BD: id=%s nombre=%s %s', getattr(paciente, 'id', None), paciente.nombre, paciente.apellido)
         return paciente
 
     # Eliminar un paciente por su identificador si existe.
@@ -33,6 +38,7 @@ class PacienteRepository(Read, Create, Update, Delete):
         if paciente:
             db.session.delete(paciente)
             db.session.commit()
+            logger.info('Paciente eliminado id=%s', entity_id)
 
     # Eliminar un paciente dado como instancia.
     def delete(self, entity: Paciente):

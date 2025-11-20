@@ -77,3 +77,62 @@ uv run flask run
 - Echevarria Matias
 - Diaz Cristopher
 - Donaire Adrián
+
+## Uso del CLI `manage.py` (operaciones desde la terminal)
+
+Se agregó un script `manage.py` en la raíz del proyecto para ejecutar tareas comunes desde PowerShell.
+
+Ejemplos de uso (ejecutar desde la carpeta del proyecto con el venv activado):
+
+- Ver ayuda / listar comandos:
+```powershell
+python manage.py --help
+```
+
+- Crear las tablas de la base de datos (según `development` en `app/config/config.py`):
+```powershell
+python manage.py init-db
+```
+
+- Eliminar todas las tablas (útil en pruebas manuales):
+```powershell
+python manage.py drop-db
+```
+
+- Poblado de ejemplo (seed): crea dos pacientes de ejemplo:
+```powershell
+python manage.py seed
+```
+
+- Listar pacientes:
+```powershell
+python manage.py list-pacientes
+```
+
+- Crear un paciente desde la terminal:
+```powershell
+python manage.py create-paciente --nombre "Luis" --apellido "Lopez" --dni "11122333" --email "luis.lopez@example.com" --fechadenacimiento 1992-04-23 --telefono "+34123456700"
+```
+
+- Obtener un paciente por id:
+```powershell
+python manage.py get-paciente 1
+```
+
+- Eliminar paciente por id:
+```powershell
+python manage.py delete-paciente 1
+```
+
+- Levantar servidor de desarrollo (usa `development`):
+```powershell
+python manage.py runserver --host 0.0.0.0 --port 5000 --debug
+```
+
+Notas:
+- `manage.py` usa por defecto el contexto `development` al ejecutar comandos. Si quieres ejecutar sobre `testing` o `production`, pregunta y añado una opción `--context` para elegirlo.
+- Asegúrate de activar el entorno virtual antes de ejecutar los comandos: `.\.venv\Scripts\Activate.ps1`.
+- Si ves advertencias de marshmallow/flask-marshmallow, instala las dependencias en el venv con:
+```powershell
+python -m pip install marshmallow==3.19.0 marshmallow-sqlalchemy==0.29.0
+```

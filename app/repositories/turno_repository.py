@@ -12,7 +12,10 @@ class TurnoRepository(Read, Create, Update, Delete):
 
     # Devolver la lista de todos los turnos.
     def get_all(self) -> list[Turno]:
-        return db.session.query(Turno).all()
+        # Devolver los turnos ordenados por fecha para mantener el orden cronológico.
+        # Así cuando se cancela un turno y se marca como 'disponible', aparecerá
+        # en la posición que le corresponde según su fecha.
+        return db.session.query(Turno).order_by(Turno.fecha).all()
 
     # Guardar un nuevo turno y retornarlo.
     def save(self, turno: Turno) -> Turno:

@@ -18,8 +18,16 @@ class PacienteService:
         return repository.get_by_id(paciente_id)
 
     @staticmethod
-    # Crear un nuevo paciente
     def create(paciente: Paciente):
+        """Crear (persistir) un nuevo paciente.
+
+        Args:
+            paciente (Paciente): Instancia de `Paciente` a guardar en el repositorio.
+
+        Returns:
+            Paciente: La entidad `Paciente` guardada (normalmente con el id asignado)
+            o el valor que devuelva el repositorio en caso de fallo.
+        """
         repository = PacienteRepository()
         return repository.save(paciente)
 
