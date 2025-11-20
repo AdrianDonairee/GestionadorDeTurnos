@@ -2,11 +2,8 @@
 """Eliminar un turno por id desde la CLI.
 
 Uso:
-  python ./scripts/delete_turno.py <id>
+python ./scripts/delete_turno.py <id>"""
 
-Ejemplo:
-  python ./scripts/delete_turno.py 3
-"""
 import sys
 from pathlib import Path
 
