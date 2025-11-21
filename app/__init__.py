@@ -10,7 +10,6 @@ ma = Marshmallow()
 def create_app(config_name: str = None) -> Flask:
     """
     Usando el patrón Application Factory
-    Referencia: Book Flask Web Development Page 78
     """
     # Si no se pasa config_name, usar FLASK_CONTEXT o 'development' por defecto
     if config_name is None:

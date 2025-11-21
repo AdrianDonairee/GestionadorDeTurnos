@@ -12,8 +12,11 @@ import sys
 import os
 import shutil
 from pathlib import Path
+import re
 
-# Add project root to sys.path so `from app import ...` works when running this script
+"""Añadimos la raíz del proyecto a `sys.path` para que los imports del
+paquete `app` funcionen cuando se ejecuta el script directamente desde
+la carpeta `scripts/` (útil en desarrollo y pruebas)."""
 ROOT = str(Path(__file__).resolve().parents[1])
 if ROOT not in sys.path:
     sys.path.insert(0, ROOT)
@@ -23,7 +26,9 @@ from app.services.turno_service import TurnoService
 from app.services.paciente_service import PacienteService
 from app.models import Paciente, Turno
 
-# Colores ANSI simples (funcionan en la mayoría de terminales modernos)
+"""Colores ANSI simples: mejoran la legibilidad en la terminal y ayudan a
+destacar errores/confirmaciones; orientado a terminales modernos que
+soporten secuencias ANSI."""
 RESET = '\x1b[0m'
 BOLD = '\x1b[1m'
 FG_CYAN = '\x1b[36m'
@@ -54,6 +59,11 @@ def pause_after_action():
     return s == '5'
 # Presentación con colores y borde dinámico según ancho de terminal
 def print_menu():
+    """Presentación del menú principal con borde y colores.
+
+    El uso de un docstring aquí hace explícito el propósito visual del
+    método para futuros mantenedores.
+    """
     cols = shutil.get_terminal_size((80, 20)).columns
     cols = max(50, min(cols, 100))
     title = 'Gestor de Turnos - Médicos'
@@ -74,9 +84,13 @@ def print_menu():
 
 
 def mostrar_turnos_disponibles():
+    """Muestra los turnos con estado 'disponible'.
+
+    Ordenamos por `id` para presentar los turnos de forma determinista
+    (1..N) y evitar resultados intermitentes en la UI o en tests.
+    """
     turnos = TurnoService.read_all()
     disponibles = [t for t in turnos if getattr(t, 'estado', 'disponible') == 'disponible']
-    # Ordenar por id para mostrar 1..N de forma determinista
     disponibles.sort(key=lambda t: getattr(t, 'id', 0))
     clear_screen()
     if not disponibles:
@@ -108,7 +122,13 @@ def reservar_turno():
         print('El turno no está disponible (estado:', turno.estado, ')')
         return
 
-    usar_existente = input('Usar paciente existente? (s/N): ').strip().lower() == 's'
+    # Pedimos explícitamente 's' o 'n' — cualquier otra respuesta se rechaza
+    while True:
+        ans = input('Usar paciente existente? (s/N): ').strip().lower()
+        if ans in ('s', 'n'):
+            usar_existente = (ans == 's')
+            break
+        print(FG_RED + "Respuesta inválida. Responda 's' o 'n'." + RESET)
     paciente = None
     if usar_existente:
         try:
@@ -121,11 +141,18 @@ def reservar_turno():
             print('Id inválido.')
             return
     else:
-        # Crear paciente nuevo
+        """Crear un paciente nuevo.
+
+        Normalizamos y validamos los campos antes de persistir para evitar
+        errores en la capa de persistencia (p. ej. DNI/telefono con
+        caracteres no numéricos o longitudes fuera de rango).
+        """
         p = Paciente()
         p.nombre = input('Nombre: ').strip()
         p.apellido = input('Apellido: ').strip()
-        # Pedir DNI y validar que contenga sólo dígitos y como máximo 10 caracteres.
+        """Pedir y normalizar el DNI: se extraen sólo dígitos para permitir
+        que el usuario escriba separadores visuales (puntos, espacios), pero
+        se persiste una forma consistente (solo dígitos, max 10)."""
         while True:
             dni_raw = input('DNI (hasta 10 dígitos): ').strip()
             dni_digits = ''.join(ch for ch in dni_raw if ch.isdigit())
@@ -137,10 +164,17 @@ def reservar_turno():
                 continue
             p.dni = dni_digits
             break
-        p.email = input('Email: ').strip()
-        # Pedir la fecha hasta que el formato sea válido (YYYY-MM-DD).
-        # No se sale de la operación; se insiste hasta que el usuario introduzca
-        # una fecha correcta.
+        # Validar email con expresión simple; insistimos hasta obtener uno válido
+        while True:
+            email_raw = input('Email: ').strip()
+            # Validación básica: algo@algo.algo (no espacios)
+            if re.match(r'^[^@\s]+@[^@\s]+\.[^@\s]+$', email_raw):
+                p.email = email_raw
+                break
+            print(FG_RED + 'Email inválido. Introduzca un email con formato válido (ej: usuario@dominio.com).' + RESET)
+        """Solicitar la fecha de nacimiento en formato `YYYY-MM-DD` y repetir
+        hasta recibir una entrada válida. Esto evita excepciones al parsear
+        fechas en capas superiores y garantiza consistencia del dato."""
         while True:
             fd = input('Fecha de nacimiento (YYYY-MM-DD): ').strip()
             try:
@@ -148,7 +182,9 @@ def reservar_turno():
                 break
             except Exception:
                 print(FG_RED + 'Fecha inválida. Introduzca de nuevo en formato YYYY-MM-DD.' + RESET)
-        # Pedir teléfono y validar que tenga exactamente 10 dígitos.
+        """Solicitar y normalizar el teléfono a sólo dígitos. Requerimos
+        exactamente 10 dígitos para mantener el formato del sistema y
+        facilitar futuras integraciones (SMS, etc.)."""
         while True:
             tel_raw = input('Teléfono (10 dígitos): ').strip()
             # Extraer sólo dígitos para permitir separadores ocasionales
@@ -192,6 +228,11 @@ def cancelar_turno():
 
 
 def listar_reservas():
+    """Lista las reservas (turnos no disponibles) ordenadas por id.
+
+    Ordenar por `id` proporciona una vista estable y fácil de seguir para
+    el operador cuando revisa reservas consecutivas.
+    """
     clear_screen()
     turnos = TurnoService.read_all()
     reservados = [t for t in turnos if getattr(t, 'estado', None) and t.estado != 'disponible']
@@ -219,27 +260,35 @@ def listar_reservas():
 def main():
     app = create_app('development')
     with app.app_context():
-        while True:
-            print_menu()
-            opt = input('> ').strip()
-            if opt == '1':
-                post = mostrar_turnos_disponibles()
-            elif opt == '2':
-                post = reservar_turno()
-            elif opt == '3':
-                post = cancelar_turno()
-            elif opt == '4':
-                post = listar_reservas()
-            elif opt == '5':
-                print('Adiós.')
-                break
-            else:
-                print('Opción inválida.')
-                post = None
+        try:
+            while True:
+                print_menu()
+                try:
+                    opt = input('> ').strip()
+                except (KeyboardInterrupt, EOFError):
+                    print('\n' + FG_YELLOW + 'Interrumpido por el usuario. Saliendo...' + RESET)
+                    break
 
-            if post:
-                print('Adiós.')
-                break
+                if opt == '1':
+                    post = mostrar_turnos_disponibles()
+                elif opt == '2':
+                    post = reservar_turno()
+                elif opt == '3':
+                    post = cancelar_turno()
+                elif opt == '4':
+                    post = listar_reservas()
+                elif opt == '5':
+                    print('Adiós.')
+                    break
+                else:
+                    print('Opción inválida.')
+                    post = None
+
+                if post:
+                    print('Adiós.')
+                    break
+        except Exception:
+            print(FG_RED + 'Se produjo un error inesperado. Saliendo.' + RESET)
             
 
 

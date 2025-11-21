@@ -17,6 +17,7 @@ Uso: python manage.py <comando> [opciones]
 import argparse
 from datetime import datetime
 from app import create_app, db
+from sqlalchemy.exc import OperationalError
 
 # Importar modelos y servicios aquí para que se resuelvan dentro del entorno del proyecto
 from app.models import Paciente, Turno
@@ -36,8 +37,18 @@ def with_app_context(func):
 
 @with_app_context
 def init_db(args):
-    db.create_all()
-    print("Base de datos inicializada (tablas creadas).")
+    try:
+        db.create_all()
+        print("Base de datos inicializada (tablas creadas).")
+    except OperationalError as e:
+        print("Error conectando a la base de datos:", str(e))
+        print()
+        print("Sugerencias:")
+        print(" - Compruebe que Postgres esté arrancado y accesible en la URI configurada.")
+        print(" - Si está usando Docker, ejecute: docker-compose up -d y verifique los logs del contenedor de Postgres.")
+        print(" - Para evitar depender de Postgres en desarrollo temporalmente, use SQLite: setee DEV_DATABASE_URI='sqlite:///dev.db' y vuelva a ejecutar init-db.")
+        print()
+        return
 
 
 @with_app_context
