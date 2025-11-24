@@ -11,7 +11,9 @@ import sys
 from pathlib import Path
 from datetime import datetime, timedelta
 
-# Add project root to sys.path so `from app import ...` works when running this script
+"""Añadimos la raíz del proyecto a `sys.path` para permitir imports
+relativos a `app` cuando se ejecuta este script desde `scripts/`.
+"""
 ROOT = str(Path(__file__).resolve().parents[1])
 if ROOT not in sys.path:
     sys.path.insert(0, ROOT)
@@ -39,14 +41,15 @@ def main():
             print('No hay turnos para crear.')
             return
 
-        # Determine last date to schedule after
+        """Determinar la última fecha existente para programar nuevos turnos
+        a partir de ella. Si no hay fechas, usar la fecha/hora actual."""
         fechas = [t.fecha for t in turnos if getattr(t, 'fecha', None)]
         if fechas:
             last = max(fechas)
         else:
             last = datetime.now()
-
-        # Create missing turnos spaced 1 hour apart after `last`
+        """Crear los turnos faltantes espaciándolos cada 1 hora a partir de
+        la última fecha conocida (`last`)."""
         missing = target - existing
         for i in range(1, missing + 1):
             nueva = Turno()

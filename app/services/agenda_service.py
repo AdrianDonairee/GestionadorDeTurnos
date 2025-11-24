@@ -3,28 +3,27 @@ from app.models import Agenda
 from datetime import datetime
 
 class AgendaService:
-
     @staticmethod
-    # Leer todas las agendas
     def read_all():
+        """Leer todas las agendas disponibles."""
         repository = AgendaRepository()
         return repository.get_all()
 
     @staticmethod
-    # Obtener una agenda por su id
     def get_by_id(agenda_id):
+        """Obtener una agenda por su identificador."""
         repository = AgendaRepository()
         return repository.get_by_id(agenda_id)
 
     @staticmethod
-    # Crear una nueva agenda
     def create(agenda: Agenda):
+        """Crear y persistir una nueva agenda."""
         repository = AgendaRepository()
         return repository.save(agenda)
 
     @staticmethod
-    # Eliminar una agenda por id
     def delete(agenda_id):
+        """Eliminar una agenda por id; devuelve True si se eliminó."""
         repository = AgendaRepository()
         agenda = repository.get_by_id(agenda_id)
         if agenda:

@@ -7,7 +7,7 @@ class RecepcionistaRepository(Read, Create, Update, Delete):
         return db.session.query(Recepcionista).filter_by(id=id).first()
 
     def get_all(self) -> list[Recepcionista]:
-        # Devolver todos los recepcionistas registrados en la base.
+        """Devolver todos los recepcionistas registrados en la base de datos."""
         return db.session.query(Recepcionista).all()
 
     def save(self, recepcionista: Recepcionista) -> Recepcionista:
@@ -21,13 +21,15 @@ class RecepcionistaRepository(Read, Create, Update, Delete):
         return recepcionista
 
     def delete_by_id(self, entity_id: int):
-        # Eliminar el recepcionista identificado por `entity_id`.
-        # Si el recepcionista no existe, no hace nada.
+        """Eliminar el recepcionista identificado por `entity_id`.
+
+        Si no existe, la operación no hace nada (idempotente)."""
         recepcionista = self.get_by_id(entity_id)
         if recepcionista:
             db.session.delete(recepcionista)
             db.session.commit()
 
     def delete(self, entity: Recepcionista):
-        # Eliminar la entidad `Recepcionista` pasada (por su id).
+        """Eliminar una instancia de `Recepcionista` delegando en
+        `delete_by_id` para reutilizar la lógica de borrado."""
         self.delete_by_id(entity.id)

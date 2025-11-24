@@ -11,7 +11,6 @@ Imprime id, nombre, apellido, dni y email de cada paciente en la BD.
 import sys
 from pathlib import Path
 
-# Add project root to sys.path so `from app import ...` works when running this script
 ROOT = str(Path(__file__).resolve().parents[1])
 if ROOT not in sys.path:
     sys.path.insert(0, ROOT)

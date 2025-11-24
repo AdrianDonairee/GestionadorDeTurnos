@@ -5,10 +5,10 @@ from app import create_app, db
 
 
 class ClienteWebTestCase(unittest.TestCase):
+    """Pruebas de endpoints expuestos por la API (cliente web)."""
 
-    # Tests de endpoints expuestos por la API (cliente web)
     def setUp(self):
-        # Usar configuración de testing y crear tablas
+        """Usar la configuración de testing y crear las tablas necesarias."""
         os.environ['FLASK_CONTEXT'] = 'testing'
         self.app = create_app()
         self.app_context = self.app.app_context()
@@ -17,7 +17,7 @@ class ClienteWebTestCase(unittest.TestCase):
         self.client = self.app.test_client()
 
     def tearDown(self):
-        # Limpiar la BD y contexto
+        """Limpiar la base de datos y el contexto tras la prueba."""
         db.session.remove()
         db.drop_all()
         self.app_context.pop()

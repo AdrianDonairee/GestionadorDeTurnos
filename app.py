@@ -8,11 +8,6 @@ app = create_app()
 app.app_context().push()
 
 if __name__ == '__main__':
-        """
-        Inicio del servidor
-        Referencias:
-            - https://flask.palletsprojects.com/en/3.0.x/api/#flask.Flask.run
-            - Book Flask Web Development Page 9
-        """
-        app.run(host="0.0.0.0", debug=True, port=5000)
+    """Inicio del servidor en modo desarrollo (no usar así en producción)."""
+    app.run(host="0.0.0.0", debug=True, port=5000)
     

@@ -3,6 +3,9 @@
 
 Por defecto N=16. El script elimina los turnos más antiguos/excedentes.
 
+Este script añade la raíz del proyecto al `sys.path` para permitir
+imports relativos a `app` cuando se ejecuta desde `scripts/`.
+
 Uso:
 python ./scripts/trim_turnos.py [N]"""
 
@@ -10,7 +13,8 @@ import sys
 from pathlib import Path
 from typing import List
 
-# Add project root to sys.path so `from app import ...` works when running this script
+"""Añadimos la raíz del proyecto a `sys.path` para permitir imports
+relativos a `app` al ejecutar este script desde `scripts/`."""
 ROOT = str(Path(__file__).resolve().parents[1])
 if ROOT not in sys.path:
     sys.path.insert(0, ROOT)

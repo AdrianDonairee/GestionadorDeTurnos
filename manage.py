@@ -136,7 +136,15 @@ def seed(args):
     p2.telefono = "+34111222333"
     PacienteService.create(p2)
 
-    print("Seed completado: 2 pacientes creados.")
+    p3 = Paciente()
+    p3.nombre = "Lucas"
+    p3.apellido = "Gimenez"
+    p3.dni = "44123456"
+    p3.email = "lucas.gimenez@example.com"
+    p3.fechadenacimiento = datetime(1990,1,1).date()
+    p3.telefono = "+34123456789"
+    PacienteService.create(p3)
+    print("Seed completado: 3 pacientes creados.")
 
 
 @with_app_context
@@ -149,10 +157,12 @@ def seed_turnos(args):
     created = 0
     for i in range(1, 9):
         t = Turno()
-        # horarios a las 9:00, 10:00, ... distribuidos en los próximos días
+        """Generar horarios rotativos en franjas de mañana (9..12) y días
+        sucesivos para poblar turnos de ejemplo."""
         t.fecha = (now + timedelta(days=(i-1)//4, hours=9 + ((i-1) % 4))).replace(minute=0, second=0, microsecond=0)
         t.estado = 'disponible'
-        # agenda_id se deja None si no hay agendas; si existe agenda 1 podría asignarse
+        """Dejar `agenda_id` en None cuando no existen agendas; si en el
+        sistema hay agendas definidas podrían asignarse explícitamente."""
         TurnoService.create(t)
         created += 1
     print(f"Seed-turnos completado: {created} turnos creados.")

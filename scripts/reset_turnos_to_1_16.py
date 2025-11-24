@@ -12,7 +12,9 @@ import sys
 from pathlib import Path
 from datetime import datetime, timedelta
 
-# Add project root to sys.path
+"""Añadimos la raíz del proyecto a `sys.path` para permitir imports
+relativos a `app` cuando se ejecuta este script desde la carpeta `scripts/`.
+"""
 ROOT = str(Path(__file__).resolve().parents[1])
 if ROOT not in sys.path:
     sys.path.insert(0, ROOT)
@@ -29,17 +31,20 @@ def confirm(prompt: str) -> bool:
 
 
 def reset_and_create(target: int = 16):
-    # Ejecuta TRUNCATE y reinicia identidad, luego crea `target` turnos.
-    # Usamos SQL directo para TRUNCATE porque es la forma segura de reiniciar la secuencia.
+    """Ejecuta TRUNCATE para reiniciar la tabla `turnos` y la secuencia de IDs,
+    luego crea `target` turnos. Usamos SQL directo para TRUNCATE porque es la
+    forma segura de reiniciar la secuencia en Postgres."""
     with db.engine.begin() as conn:
         conn.execute(text("TRUNCATE TABLE turnos RESTART IDENTITY CASCADE;"))
 
-    # Crear turnos nuevos
+    """Crear `target` turnos nuevos y devolver sus IDs."""
     created_ids = []
     base = datetime.now()
     for i in range(1, target + 1):
         t = Turno()
-        t.fecha = base + timedelta(days=(i-1)//4, hours=((i-1)%4) + 9)  # distribuir horarios (9..12) y días
+        """Distribuir horarios en franjas (9..12) y rotar días para
+        generar turnos de ejemplo."""
+        t.fecha = base + timedelta(days=(i-1)//4, hours=((i-1)%4) + 9)
         t.estado = 'disponible'
         created = TurnoService.create(t)
         created_ids.append(created.id)
@@ -52,7 +57,7 @@ def main():
     if '--yes' in sys.argv or '-y' in sys.argv:
         force = True
     if len(sys.argv) >= 2:
-        # allow `--yes` and optionally an integer argument
+        """Permitir `--yes` y opcionalmente un argumento entero para `target`."""
         for a in sys.argv[1:]:
             if a.lstrip('-').isdigit():
                 target = int(a)

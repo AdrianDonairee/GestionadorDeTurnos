@@ -21,11 +21,13 @@ def create_app(config_name: str = None) -> Flask:
 
     app = Flask(__name__)
 
-    # Cargar la configuración usando la factory
+    """Cargar la configuración a partir de la fábrica de settings.
+
+    Separar la creación de config en una factory permite definir
+    ajustes por entorno (development/testing/production).
+    """
     f = config.factory(config_name)
     app.config.from_object(f)
-
-    # Inicializar extensiones (base de datos y serializadores)
     db.init_app(app)
     ma.init_app(app)
     from app.resources import home_bp, paciente_bp

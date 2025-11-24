@@ -33,7 +33,7 @@ try:
         for r in rows:
             print(r)
 
-        # ahora listar algunos turnos de ejemplo
+        """Ahora listar algunos turnos de ejemplo si la tabla existe."""
         try:
             tcount = conn.execute(text('SELECT count(*) FROM public.turnos')).scalar()
             print('\nTURNOS COUNT:', tcount)

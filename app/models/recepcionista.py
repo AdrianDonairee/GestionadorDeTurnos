@@ -3,9 +3,11 @@ from app import db
 
 @dataclass
 class Recepcionista(db.Model):
-    
-    # Representa a una recepcionista del consultorio.
-    # Atributos principales: id, nombre, email.
+    """Modelo `Recepcionista`.
+
+    Representa a una recepcionista del consultorio.
+    Atributos principales: `id`, `nombre`, `email`.
+    """
     __tablename__ = "recepcionistas"
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)

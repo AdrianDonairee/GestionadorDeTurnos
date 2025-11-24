@@ -6,24 +6,25 @@ from app.services import AgendaService, RecepcionistaService
 from app import create_app, db
 
 class TestAgenda(unittest.TestCase):
-    # Tests para la entidad Agenda (crear, leer, listar)
+    """Pruebas para la entidad `Agenda`: crear, leer y listar registros."""
     def setUp(self):
-        # Preparar app en modo testing y crear tablas
+        """Configurar la aplicación en modo `testing` y crear tablas antes
+        de cada prueba."""
         os.environ['FLASK_CONTEXT'] = 'testing'
         self.app = create_app()
         self.app_context = self.app.app_context()
         self.app_context.push()
-        # Crear todas las tablas antes de cada test
+        """Crear todas las tablas necesarias para las pruebas."""
         db.create_all()
 
     def tearDown(self):
-        # Limpiar la base de datos después de cada test
+        """Limpiar la base de datos y el contexto al finalizar cada prueba."""
         db.session.remove()
         db.drop_all()
         self.app_context.pop()
 
     def test_create_agenda(self):
-        # Crear una agenda y verificar campos
+        """Crear una agenda y verificar los campos que se persisten."""
         agenda = self._create_agenda(fecha=date(2024, 12, 20))
         
         self.assertIsNotNone(agenda.id)
@@ -31,7 +32,7 @@ class TestAgenda(unittest.TestCase):
         self.assertEqual(agenda.recepcionista_id, 1)
 
     def _create_recepcionista(self):
-        # crear una recepcionista persistida
+        """Crear y persistir una recepcionista para usar en las pruebas."""
         recepcionista = Recepcionista(
             nombre="Ana",
             email="ana@mail.com",
@@ -40,7 +41,7 @@ class TestAgenda(unittest.TestCase):
         return recepcionista
 
     def test_get_agenda_by_id(self):
-        # Obtener agenda por id
+        """Obtener una agenda por su id y comprobar sus datos."""
         agenda = self._create_agenda(fecha=date(2024, 12, 20))
 
         fetched_agenda = AgendaService.get_by_id(agenda.id)
@@ -48,7 +49,7 @@ class TestAgenda(unittest.TestCase):
         self.assertEqual(fetched_agenda.fecha, date(2024, 12, 20))
 
     def test_read_all_agendas(self):
-        # Listar todas las agendas
+        """Listar todas las agendas y comprobar el conteo esperado."""
         agenda1 = self._create_agenda(fecha=date(2024, 12, 20))
         agenda2 = self._create_agenda(fecha=date(2024, 12, 21))
 

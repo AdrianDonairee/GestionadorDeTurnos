@@ -7,7 +7,9 @@ python ./scripts/delete_paciente.py <id>
 import sys
 from pathlib import Path
 
-# Add project root to sys.path so `from app import ...` works when running this script
+"""Añadimos la raíz del proyecto a `sys.path` para permitir imports
+relativos a `app` cuando este script se ejecuta desde `scripts/`.
+"""
 ROOT = str(Path(__file__).resolve().parents[1])
 if ROOT not in sys.path:
     sys.path.insert(0, ROOT)

@@ -6,18 +6,18 @@ import os
 class AppTestCase(unittest.TestCase):
 
     def setUp(self):
-        # Preparar contexto de Flask para testing
+        """Preparar contexto de Flask para pruebas (modo `testing`)."""
         os.environ['FLASK_CONTEXT'] = 'testing'
         self.app = create_app()
         self.app_context = self.app.app_context()
         self.app_context.push()
 
     def tearDown(self):
-        # Limpiar contexto de Flask
+        """Limpiar el contexto de Flask tras cada prueba."""
         self.app_context.pop()
 
     def test_app(self):
-        # La aplicación debe existir en el contexto
+        """Comprobar que la aplicación está registrada en el contexto actual."""
         self.assertIsNotNone(current_app)
 
 if __name__ == '__main__':
