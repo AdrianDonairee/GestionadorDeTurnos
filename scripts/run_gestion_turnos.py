@@ -188,10 +188,10 @@ def reservar_turno():
         facilitar futuras integraciones (SMS, etc.)."""
         while True:
             tel_raw = input('Teléfono (10 dígitos): ').strip()
-                """Extraer sólo dígitos del teléfono para permitir separadores
-                visuales (espacios, guiones) pero persistir una forma
-                consistente: solo dígitos."""
-                digits = ''.join(ch for ch in tel_raw if ch.isdigit())
+            """Extraer sólo dígitos del teléfono para permitir separadores
+            visuales (espacios, guiones) pero persistir una forma
+            consistente: solo dígitos."""
+            digits = ''.join(ch for ch in tel_raw if ch.isdigit())
             if len(digits) != 10:
                 print(FG_RED + 'Teléfono inválido. Debe contener exactamente 10 dígitos.' + RESET)
                 continue
