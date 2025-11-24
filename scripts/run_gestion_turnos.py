@@ -153,13 +153,13 @@ def reservar_turno():
         que el usuario escriba separadores visuales (puntos, espacios), pero
         se persiste una forma consistente (solo dígitos, max 10)."""
         while True:
-            dni_raw = input('DNI (hasta 10 dígitos): ').strip()
+            dni_raw = input('DNI (hasta 8 dígitos): ').strip()
             dni_digits = ''.join(ch for ch in dni_raw if ch.isdigit())
             if len(dni_digits) == 0:
                 print(FG_RED + 'DNI inválido. Debe contener al menos 1 dígito.' + RESET)
                 continue
-            if len(dni_digits) > 10:
-                print(FG_RED + 'DNI demasiado largo. Máximo 10 dígitos.' + RESET)
+            if len(dni_digits) > 8:
+                print(FG_RED + 'DNI demasiado largo. Máximo 8 dígitos.' + RESET)
                 continue
             p.dni = dni_digits
             break

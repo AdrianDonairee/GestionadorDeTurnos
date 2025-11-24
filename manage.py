@@ -121,10 +121,10 @@ def seed(args):
     p1 = Paciente()
     p1.nombre = "Juan"
     p1.apellido = "Perez"
-    p1.dni = "12345678"
+    p1.dni = "10987654"
     p1.email = "juan.perez@example.com"
     p1.fechadenacimiento = datetime(1990,1,1).date()
-    p1.telefono = "+34123456789"
+    p1.telefono = "2604456789"
     PacienteService.create(p1)
 
     p2 = Paciente()
@@ -133,7 +133,7 @@ def seed(args):
     p2.dni = "87654321"
     p2.email = "ana.gomez@example.com"
     p2.fechadenacimiento = datetime(1985,6,15).date()
-    p2.telefono = "+34111222333"
+    p2.telefono = "2604222333"
     PacienteService.create(p2)
 
     p3 = Paciente()

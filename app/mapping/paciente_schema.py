@@ -1,11 +1,12 @@
 from marshmallow import Schema, fields, post_load
+from marshmallow.validate import Length
 from app.models import Paciente
 
 class PacienteSchema(Schema):
     id = fields.Int(dump_only=True)
     nombre = fields.Str(required=True)
     apellido = fields.Str(required=True)
-    dni = fields.Str(required=True)
+    dni = fields.Str(required=True, validate=Length(min=1, max=8))
     telefono = fields.Str()
     email = fields.Email()
     fecha_de_nacimiento = fields.Date()
