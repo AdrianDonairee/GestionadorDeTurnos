@@ -2,12 +2,15 @@
 """Listar todos los turnos con información básica.
 
 Uso:
-  python ./scripts/list_turnos.py
+    python ./scripts/list_turnos.py
+
+Este script añade automáticamente la raíz del proyecto a `sys.path`
+para permitir imports relativos a `app` cuando se ejecuta desde
+la carpeta `scripts/` (útil en desarrollo).
 """
 import sys
 from pathlib import Path
 
-# Add project root to sys.path so `from app import ...` works when running this script
 ROOT = str(Path(__file__).resolve().parents[1])
 if ROOT not in sys.path:
     sys.path.insert(0, ROOT)

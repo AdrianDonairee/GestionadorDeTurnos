@@ -8,29 +8,30 @@ from app import db
 import os
 
 class PacienteTestCase(unittest.TestCase):
-    # Tests para la entidad Paciente: crear, leer, actualizar y borrar
+    """Pruebas para la entidad `Paciente`: crear, leer, actualizar y borrar."""
 
     def setUp(self):
-        # Preparar app en modo testing y crear tablas
+        """Configurar la aplicación en modo `testing` y crear las tablas
+        necesarias antes de cada prueba."""
         os.environ['FLASK_CONTEXT'] = 'testing'
         self.app = create_app()
         self.app_context = self.app.app_context()
         self.app_context.push()
-        # Crear todas las tablas antes de cada test
+        """Crear todas las tablas antes de cada prueba."""
         db.create_all()
 
     def tearDown(self):
-        # Limpiar la base de datos después de cada test
+        """Limpiar la base de datos y el contexto al finalizar cada prueba."""
         db.session.remove()
         db.drop_all()
         self.app_context.pop()
 
     def test_app(self):
-        # Verificar que la app existe
+        """Verificar que la aplicación Flask está disponible en el contexto."""
         self.assertIsNotNone(current_app)
         
     def test_registrar_paciente(self):
-        # Registrar paciente y validar campos
+        """Registrar un paciente y validar los campos persistidos."""
         paciente = self._registrar_paciente()
 
         self.assertEqual(paciente.id, 1)
@@ -40,20 +41,20 @@ class PacienteTestCase(unittest.TestCase):
         self.assertEqual(paciente.dni, "12345678")
 
     def test_obtener_paciente(self):
-        # Obtener paciente por id
+        """Recuperar un paciente por id y comprobar sus datos."""
         paciente = self._registrar_paciente()
         paciente = PacienteService.get_by_id(paciente.id)
         self.assertIsNotNone(paciente)
         self.assertEqual(paciente.apellido, "Pérez")
 
     def test_obtener_pacientes(self):
-        # Listar pacientes
+        """Comprobar que la lista de pacientes devuelve los registros creados."""
         self._registrar_paciente()
         pacientes = PacienteService.read_all()
         self.assertEqual(len(pacientes), 1)
 
     def test_actualizar_paciente(self):
-        # Actualizar campos de un paciente
+        """Actualizar campos de un paciente y verificar que se guarden."""
         paciente = self._registrar_paciente()
         paciente.nombre = "Carlos"
         paciente.apellido = "Gomez"
@@ -84,7 +85,7 @@ class PacienteTestCase(unittest.TestCase):
         return paciente
 
     def test_eliminar_paciente(self):
-        # Eliminar paciente y comprobar que ya no existe
+        """Eliminar un paciente y confirmar que ya no puede recuperarse."""
         paciente = self._registrar_paciente()
         eliminado = PacienteService.delete(paciente.id)
         self.assertTrue(eliminado)

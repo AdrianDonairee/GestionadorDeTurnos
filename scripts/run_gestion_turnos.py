@@ -57,7 +57,6 @@ def pause_after_action():
     """Pausa tras una acción. Devuelve True si el usuario quiere salir ('5')."""
     s = input(FG_YELLOW + "Presiona ENTER para volver al menú (o escribe '5' para salir): " + RESET).strip()
     return s == '5'
-# Presentación con colores y borde dinámico según ancho de terminal
 def print_menu():
     """Presentación del menú principal con borde y colores.
 
@@ -122,7 +121,7 @@ def reservar_turno():
         print('El turno no está disponible (estado:', turno.estado, ')')
         return
 
-    # Pedimos explícitamente 's' o 'n' — cualquier otra respuesta se rechaza
+    """Solicitar explícitamente 's' o 'n' y rechazar respuestas inválidas."""
     while True:
         ans = input('Usar paciente existente? (s/N): ').strip().lower()
         if ans in ('s', 'n'):
@@ -164,10 +163,12 @@ def reservar_turno():
                 continue
             p.dni = dni_digits
             break
-        # Validar email con expresión simple; insistimos hasta obtener uno válido
+        """Validar el email usando una expresión regular simple; repetir
+        hasta obtener una entrada válida para evitar errores posteriores.
+        """
         while True:
             email_raw = input('Email: ').strip()
-            # Validación básica: algo@algo.algo (no espacios)
+            """Validación básica: patrón user@dominio.tld sin espacios."""
             if re.match(r'^[^@\s]+@[^@\s]+\.[^@\s]+$', email_raw):
                 p.email = email_raw
                 break
@@ -187,8 +188,10 @@ def reservar_turno():
         facilitar futuras integraciones (SMS, etc.)."""
         while True:
             tel_raw = input('Teléfono (10 dígitos): ').strip()
-            # Extraer sólo dígitos para permitir separadores ocasionales
-            digits = ''.join(ch for ch in tel_raw if ch.isdigit())
+                """Extraer sólo dígitos del teléfono para permitir separadores
+                visuales (espacios, guiones) pero persistir una forma
+                consistente: solo dígitos."""
+                digits = ''.join(ch for ch in tel_raw if ch.isdigit())
             if len(digits) != 10:
                 print(FG_RED + 'Teléfono inválido. Debe contener exactamente 10 dígitos.' + RESET)
                 continue
@@ -197,7 +200,8 @@ def reservar_turno():
         paciente = PacienteService.create(p)
         print(f'Paciente creado id={paciente.id}')
 
-    # Asignar paciente al turno y cambiar estado
+    """Asignar el paciente creado/seleccionado al turno y marcarlo
+    como reservado en la capa de negocio."""
     turno.paciente = paciente
     turno.paciente_id = paciente.id
     TurnoService.asignar_cliente(turno, 'reservado')
@@ -236,7 +240,8 @@ def listar_reservas():
     clear_screen()
     turnos = TurnoService.read_all()
     reservados = [t for t in turnos if getattr(t, 'estado', None) and t.estado != 'disponible']
-    # Ordenar por id para mostrar reservas en orden creciente de id
+    """Ordenar por id para presentar las reservas en orden estable y
+    fácil de seguir para el operador."""
     reservados.sort(key=lambda t: getattr(t, 'id', 0))
     section_header('Reservas')
     if not reservados:

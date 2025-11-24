@@ -19,7 +19,7 @@ from datetime import datetime
 from app import create_app, db
 from sqlalchemy.exc import OperationalError
 
-# Importar modelos y servicios aquí para que se resuelvan dentro del entorno del proyecto
+"""Importar modelos y servicios dentro del contexto del proyecto."""
 from app.models import Paciente, Turno
 from app.services.paciente_service import PacienteService
 from app.services.turno_service import TurnoService
@@ -65,7 +65,9 @@ def runserver(args):
 
 @with_app_context
 def create_paciente(args):
-    # Crear instancia de Paciente y persistir usando el servicio
+    """Crear una instancia de `Paciente` a partir de los argumentos
+    de la línea de comandos y persistirla mediante el servicio.
+    Valida el formato de la fecha antes de crear la entidad."""
     try:
         fecha = datetime.strptime(args.fechadenacimiento, "%Y-%m-%d").date()
     except Exception as e:
@@ -114,7 +116,8 @@ def delete_paciente(args):
 
 @with_app_context
 def seed(args):
-    # Poblar datos de ejemplo mínimos
+    """Poblar la base de datos con un conjunto mínimo de pacientes
+    de ejemplo (útil para pruebas locales)."""
     p1 = Paciente()
     p1.nombre = "Juan"
     p1.apellido = "Perez"
@@ -138,7 +141,9 @@ def seed(args):
 
 @with_app_context
 def seed_turnos(args):
-    # Crear turnos de ejemplo en fechas próximas
+    """Crear turnos de ejemplo en fechas próximas para pruebas o demo.
+    Los horarios se generan a partir de la fecha/hora actual.
+    """
     from datetime import datetime
     now = datetime.now()
     created = 0
