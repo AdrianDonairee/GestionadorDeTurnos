@@ -23,6 +23,12 @@ def main():
     app = create_app('development')
     with app.app_context():
         turnos = TurnoService.read_all()
+        """ Asegurar orden determinista por `id` para mostrar 1..N"""
+        try:
+            turnos = sorted(turnos, key=lambda t: getattr(t, 'id', 0))
+        except Exception:
+            """Si los objetos no son iterables/directamente ordenables, dejar como vinieron"""
+            pass
         print(f'Total turnos: {len(turnos)}')
         for t in turnos:
             fecha = t.fecha.strftime('%Y-%m-%d %H:%M') if getattr(t, 'fecha', None) else 'sin fecha'
