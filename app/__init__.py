@@ -10,12 +10,7 @@ ma = Marshmallow()
 
 
 def create_app(config_name: str = None) -> Flask:
-    """Crear y configurar la instancia de Flask.
-
-    - `config_name`: nombre del entorno (p.ej. 'development' o 'testing').
-    Si no se proporciona se toma de la variable `FLASK_CONTEXT` o
-    'development' por defecto.
-    """
+    """Crear y configurar la instancia de Flask."""
     if config_name is None:
         config_name = os.getenv('FLASK_CONTEXT', 'development')
 

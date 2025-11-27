@@ -1,7 +1,8 @@
 """Recursos HTTP relacionados con `Paciente`.
 
 Define endpoints para listar, obtener, actualizar y eliminar pacientes.
-Las respuestas usan `PacienteSchema` para serializar/deserializar.
+Las respuestas usan `PacienteSchema` para serializar/deserializar y se
+apoyan en `PacienteService` para la lógica de negocio.
 """
 
 from app.models import Paciente
