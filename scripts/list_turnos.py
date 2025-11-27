@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 """Listar todos los turnos con información básica.
 
 Uso:

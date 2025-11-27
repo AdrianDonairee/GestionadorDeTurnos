@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 """CLI interactivo para gestionar turnos desde la terminal.
 
 Functions:

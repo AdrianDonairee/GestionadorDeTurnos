@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 """Listar pacientes con sus ids.
 
 Uso:

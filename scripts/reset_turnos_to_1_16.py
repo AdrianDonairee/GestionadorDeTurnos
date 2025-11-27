@@ -1,9 +1,8 @@
-#!/usr/bin/env python3
 """Resetear la tabla `turnos` y crear 16 turnos nuevos con IDs 1..16.
 
 USO:
-  python ./scripts/reset_turnos_to_1_16.py      # pedirá confirmación
-  python ./scripts/reset_turnos_to_1_16.py --yes  # ejecuta sin pedir confirmación
+python ./scripts/reset_turnos_to_1_16.py      # pedirá confirmación
+python ./scripts/reset_turnos_to_1_16.py --yes  # ejecuta sin pedir confirmación
 
 ADVERTENCIA: Esto BORRA todos los registros de la tabla `turnos` (y puede afectar tablas relacionadas
 si existen claves foráneas). Haz backup antes de ejecutar si necesitas conservar datos.

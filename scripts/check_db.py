@@ -1,5 +1,3 @@
-#!/usr/bin/env python3
-# coding: utf-8
 """
 Script pequeño para comprobar la conexión a la BD y listar hasta 5 pacientes.
 Ejecutar desde PowerShell con el entorno virtual activo:

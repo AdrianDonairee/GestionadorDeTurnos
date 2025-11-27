@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 """Crear turnos para tener al menos N turnos (por defecto 16).
 
 Uso:

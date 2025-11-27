@@ -7,7 +7,6 @@ Representa una cita con fecha y estado; enlaza opcionalmente con un
 `Paciente` y una `Agenda`. Se utiliza para reservar y cancelar turnos.
 """
 
-
 @dataclass
 class Turno(db.Model):
     __tablename__ = 'turnos'

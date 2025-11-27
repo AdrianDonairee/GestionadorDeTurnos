@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 """Recortar la tabla de `turnos` para que queden solo los N primeros (por fecha).
 
 Por defecto N=16. El script elimina los turnos más antiguos/excedentes.

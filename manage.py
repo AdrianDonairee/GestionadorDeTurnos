@@ -142,7 +142,7 @@ def seed(args):
     p3.dni = "44123456"
     p3.email = "lucas.gimenez@example.com"
     p3.fechadenacimiento = datetime(1990,1,1).date()
-    p3.telefono = "+2604456789"
+    p3.telefono = "2604456789"
     PacienteService.create(p3)
     print("Seed completado: 3 pacientes creados.")
 
